@@ -17,13 +17,6 @@ Download **`TempleEscape.html`** and open it in any modern browser. No server ne
 
 ---
 
-## 📸 Screenshot
-
-<!-- Replace with an actual screenshot once you have one -->
-![Temple Escape gameplay screenshot](docs/screenshot.png)
-
----
-
 ## 🕹️ Controls
 
 | Key | Action |
@@ -94,32 +87,9 @@ No build step. No npm. No bundler. Pure HTML + JavaScript.
 
 ---
 
-## 📁 Repository Structure
-
-```
-temple-escape/
-├── TempleEscape.html     # The entire game — play this
-├── README.md             # This file
-├── docs/
-│   ├── DOCUMENTATION.md  # Full technical reference
-│   └── screenshot.png    # Gameplay screenshot (add your own)
-└── LICENSE
-```
-
----
-
-## 🚀 Hosting on GitHub Pages
-
-1. Push this repo to GitHub
-2. Go to **Settings → Pages**
-3. Set Source to **`main` branch, `/ (root)`**
-4. Wait ~60 seconds — your game will be live at `https://yourusername.github.io/temple-escape/TempleEscape.html`
-
----
-
 ## 📄 License
 
-MIT — do whatever you want with it, attribution appreciated but not required.
+MIT — do whatever you want with it, attribution required.
 
 ---
 

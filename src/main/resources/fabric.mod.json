@@ -3,7 +3,7 @@
   "id": "cyberaudio",
   "version": "${version}",
   "name": "CyberAudio",
-  "description": "Minecraft-native streaming audio player for direct HTTP/HTTPS media URLs.",
+  "description": "Minecraft-native audio player for direct streams with optional YouTube and Spotify embeds through MCEF.",
   "authors": ["JosephDola"],
   "license": "MIT",
   "environment": "client",
@@ -12,9 +12,12 @@
     "client": ["com.cybertron.cyberaudio.client.CyberAudioClient"]
   },
   "depends": {
-    "fabricloader": ">=0.19.3",
+    "fabricloader": ">=0.18.4",
     "minecraft": "~1.21.11",
     "java": ">=21",
     "fabric-api": "*"
+  },
+  "suggests": {
+    "mcef": "*"
   }
 }

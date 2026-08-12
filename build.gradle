@@ -9,6 +9,12 @@ base { archivesName = project.archives_base_name }
 
 repositories {
     mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven { name = "Modrinth"; url = "https://api.modrinth.com/maven" }
+        }
+        filter { includeGroup "maven.modrinth" }
+    }
 }
 
 loom {
@@ -26,6 +32,10 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    // Optional compile-time integration. At runtime CyberAudio detects whether MCEF is installed.
+    modCompileOnly "maven.modrinth:bQhBuv7x:JLGheGoq"
+
     implementation "com.googlecode.soundlibs:mp3spi:1.9.5.4"
     implementation "com.googlecode.soundlibs:vorbisspi:1.0.3.3"
     implementation "com.googlecode.soundlibs:tritonus-share:0.3.7.4"

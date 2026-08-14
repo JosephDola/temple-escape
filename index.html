@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#02090c" />
+  <title>Temple Escape</title>
+  <link rel="icon" href="data:," />
+</head>
+<body>
+  <div id="game"></div>
+
+  <section id="menu" class="screen menu-screen">
+    <div class="menu-shade"></div>
+    <div class="menu-panel">
+      <p class="eyebrow">THE FORGOTTEN GATE</p>
+      <h1>TEMPLE<br><span>ESCAPE</span></h1>
+      <p class="tagline">Recover the five crystals. Wake the gate. Do not let the Guardian find you.</p>
+      <div class="menu-actions">
+        <button id="playBtn" class="primary">PLAY</button>
+        <button id="settingsBtn">SETTINGS</button>
+      </div>
+      <p id="platformTag" class="platform-tag">WEB BUILD</p>
+    </div>
+  </section>
+
+  <section id="settings" class="screen modal hidden">
+    <div class="card">
+      <p class="eyebrow">VIDEO</p>
+      <h2>SETTINGS</h2>
+      <label>Graphics preset
+        <select id="qualitySelect">
+          <option value="auto">Auto</option>
+          <option value="legacy">Legacy / Older PCs & Macs</option>
+          <option value="balanced">Balanced</option>
+          <option value="high">High</option>
+        </select>
+      </label>
+      <label class="row"><span>Screen shake</span><input id="shakeToggle" type="checkbox" checked /></label>
+      <label class="row"><span>Music & ambience</span><input id="audioToggle" type="checkbox" checked /></label>
+      <button id="settingsClose" class="primary">DONE</button>
+    </div>
+  </section>
+
+  <section id="pause" class="screen modal hidden">
+    <div class="card small">
+      <p class="eyebrow">TEMPLE ESCAPE</p>
+      <h2>PAUSED</h2>
+      <button id="resumeBtn" class="primary">RESUME</button>
+      <button id="quitBtn">MAIN MENU</button>
+    </div>
+  </section>
+
+  <section id="endScreen" class="screen modal hidden">
+    <div class="card small">
+      <p id="endEyebrow" class="eyebrow">THE GATE</p>
+      <h2 id="endTitle">ESCAPED</h2>
+      <p id="endText">The temple releases you. For now.</p>
+      <button id="retryBtn" class="primary">PLAY AGAIN</button>
+      <button id="endMenuBtn">MAIN MENU</button>
+    </div>
+  </section>
+
+  <div id="hud" class="hidden">
+    <div class="hud-block top-left">
+      <div class="crystal-line"><span class="crystal-icon">◆</span><strong id="crystalCount">0/5</strong></div>
+      <div class="label">CRYSTALS</div>
+      <div class="objective"><span>OBJECTIVE</span><b id="objectiveText">Find the five gate crystals</b></div>
+    </div>
+    <div class="timer"><span>⌛</span><strong id="timerText">10:00</strong></div>
+    <canvas id="minimap" width="180" height="180"></canvas>
+    <div class="hud-block bottom-left">
+      <div class="label">FLASHLIGHT <strong id="batteryText">100%</strong></div>
+      <div class="bar"><i id="batteryBar"></i></div>
+    </div>
+    <div class="stamina-wrap">
+      <div class="label">STAMINA</div>
+      <div class="bar"><i id="staminaBar"></i></div>
+    </div>
+    <div class="hud-block bottom-right">
+      <div class="label">HEALTH</div>
+      <div class="health-line"><span>♥</span><strong id="healthText">100</strong></div>
+      <div class="bar red"><i id="healthBar"></i></div>
+    </div>
+    <div id="prompt" class="prompt hidden">E — COLLECT CRYSTAL</div>
+    <div id="warning" class="warning hidden">THE GUARDIAN IS NEAR</div>
+    <div id="crosshair">·</div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

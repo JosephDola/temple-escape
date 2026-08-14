@@ -1,0 +1,16 @@
+EASIEST WAY TO PLAY TEMPLE ESCAPE ON MAC
+
+1. Keep "Temple Escape Launcher.app" inside the Temple Escape game folder.
+2. Double-click "Temple Escape Launcher.app".
+3. The first launch automatically installs anything missing.
+4. Your browser opens automatically when the game is ready.
+
+No Terminal commands are required.
+
+If macOS blocks it the first time:
+- Control-click "Temple Escape Launcher.app"
+- Choose Open
+- Choose Open again
+
+Backup option:
+Double-click PLAY_TEMPLE_ESCAPE.command. Terminal opens automatically and runs the commands for you.

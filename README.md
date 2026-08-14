@@ -1,96 +1,86 @@
-# 🏛️ Temple Escape — Horror Edition
+# Temple Escape — Remastered
 
-> *A first-person browser horror game. One file. No install. Just dread.*
+Temple Escape is being rebuilt as a shared-core first-person horror adventure for **web** and **desktop/Steam**. Both versions use the same Three.js gameplay code so fixes and new features land everywhere at once.
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
-![Three.js](https://img.shields.io/badge/Three.js-r128-black?style=flat&logo=three.js)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+## Current alpha
 
----
+- Procedurally generated 9×9 temple maze
+- Five crystal objective and awakened exit gate
+- Guardian AI using maze-aware shortest-path pursuit
+- Flashlight battery, stamina, health and spike traps
+- Circular minimap, timer and objective HUD
+- Procedural Web Audio ambience and sound effects (works offline)
+- Graphics presets including **Legacy / Older PCs & Macs**
+- Cinematic remastered menu art and teal-crystal visual direction
+- Browser build via Vite
+- Desktop build via Electron 37.6.0
 
-## 🎮 Play It
+## Controls
 
-Download **`TempleEscape.html`** and open it in any modern browser. No server needed, no install, no dependencies — everything is bundled into the single file.
+| Input | Action |
+|---|---|
+| WASD | Move |
+| Mouse | Look |
+| Shift | Sprint |
+| Space | Jump |
+| E | Collect crystal |
+| Esc | Pause |
 
-> **Best played:** Chrome or Firefox, fullscreen, headphones on, lights off.
+## Run the web build
 
----
+```bash
+npm install
+npm run dev
+```
 
-## 🕹️ Controls
+Production web build:
 
-| Key | Action |
-|-----|--------|
-| `W A S D` | Move |
-| `Mouse` | Look around |
-| `Shift` | Sprint (drains stamina) |
-| `Space` | Jump |
-| `E` | Pick up key / Pull lever |
-| `F` | Toggle flashlight |
-| `M` | Toggle background music |
-| `Esc` / alt-tab | Auto-pause |
+```bash
+npm run build:web
+```
 
----
+The static site is written to `dist/`.
 
-## 🎯 Objective
+## Desktop / Steam build
 
-1. Find all **5 color-coded keys** scattered through the procedurally generated maze
-2. Bring each key to its **matching-color lever** and press `E` to pull it
-3. Once all 5 levers are pulled, the **exit portal** opens
-4. Your **compass** activates — follow it to the exit and escape
+Temple Escape uses Electron **37.6.0** for the legacy desktop target. The target floor is:
 
-> ⚠️ Something is already in the maze when you arrive. It is not friendly.
+- macOS 11 Big Sur or newer, Intel x64
+- Windows 10 or newer, x64
 
----
+Build locally:
 
-## 👻 The Entity
+```bash
+npm run build:mac
+npm run build:win
+```
 
-The entity does **not** simply chase you. It uses three different behaviours:
+Packaged files are written to `release/`.
 
-- **Patrol** — wanders the halls independently from the moment it awakens (5 seconds after you start). You may turn a corner and find it standing there.
-- **Visible approach** — appears down a corridor in your line of sight and slowly creeps toward you. You have time to run.
-- **Stalk** — spawns behind you and *only moves while you are not looking at it*. Turn around to freeze it in place.
-- **Behind jumpscare** — teleports directly behind you; your camera snaps to face it.
-- **Front jumpscare** — appears right in front of you out of nowhere, then vanishes.
+> The unsigned GitHub Actions builds are for testing. A public macOS Steam release must be signed/notarized with the developer's Apple credentials before publishing.
 
-Jumpscares do **not** deal damage — they are pure psychological horror.
+## Steam architecture
 
----
+Steam-specific features are intentionally isolated from gameplay. The game does **not** require the Steamworks API to run, so the browser build stays clean and the desktop build can add achievements/cloud/overlay integration later without forking the game.
 
-## ✨ Features
+Recommended Steam depots:
 
-- **Procedurally generated maze** — 13×13 grid (169 rooms) using recursive backtracker DFS; different layout every run
-- **Fully self-contained** — all audio baked in as base64; works completely offline
-- **Real uploaded audio** — walking footsteps, running footsteps, breathing (fast/slow crossfade), jumpscare stinger, random spooky ambience
-- **Procedural horror music** — layered drone oscillators + evolving pad + shimmer + randomised tension stabs, generated live via Web Audio API
-- **Breathing system** — fast breathing while sprinting, slow recovery breathing until stamina fully restores
-- **Custom-built horror entity** — fully rigged character (torso, arms, legs, head, cloak strips, glowing eyes) built entirely from Three.js primitives; walk animation driven by code, not a keyframe file
-- **Color-coded key/lever puzzle** — 5 keys, 5 levers; keys shown as inventory dots in HUD
-- **Rotating compass** — points to the exit once all levers are pulled
-- **Pause on tab switch** — game auto-pauses if you alt-tab or lose pointer lock; audio suspends cleanly
-- **Stamina system** — sprint only drains while actually moving; exhaustion locks sprint until 30% recovery
-- **Spike traps** — 2 random trap rooms
-- **Battery-powered flashlight** — drains over time; find batteries to recharge; flickers when low
-- **5-minute timer** — red alarm when under 60 seconds
+- Windows x64 depot
+- macOS Intel x64 depot
 
----
+## Project layout
 
-## 🛠️ Tech Stack
+```text
+src/                 shared game + UI
+index.html           web entry point
+electron/            desktop wrapper + macOS entitlements
+.github/workflows/   web / Windows / Intel Mac builds
+```
 
-| Library | Version | Purpose |
-|---------|---------|---------|
-| [Three.js](https://threejs.org/) | r128 | 3D rendering, scene, lighting |
-| Web Audio API | native | All audio (procedural music + real samples) |
-| Pointer Lock API | native | Mouse-look input |
+## Legacy version
 
-No build step. No npm. No bundler. Pure HTML + JavaScript.
+The old one-file prototype is preserved separately during the remaster process and is being used as a gameplay reference rather than as the new architecture.
 
----
+## License
 
-## 📄 License
-
-MIT — do whatever you want with it, attribution required.
-
----
-
-*Built with Three.js and a lot of Web Audio API elbow grease.*
+MIT.

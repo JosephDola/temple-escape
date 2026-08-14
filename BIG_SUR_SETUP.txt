@@ -1,0 +1,18 @@
+TEMPLE ESCAPE — BIG SUR SETUP
+
+Requirements:
+- macOS 11 Big Sur or newer
+- Node.js 18 or newer
+
+First run:
+1. Open Terminal in this folder.
+2. Run:
+   rm -rf node_modules package-lock.json
+   npm install
+   npm run dev
+3. Open the Local URL printed by Vite (normally http://localhost:5173/).
+
+Why these versions are pinned:
+- Vite 6.0.5 supports Node 18 and uses esbuild 0.24.0, which supports macOS 11 Big Sur.
+- electron-builder 24.13.3 supports Node 14+, so it works with Node 18.
+- Electron 37.6.0 is retained because Electron 38+ dropped macOS 11 support.

@@ -1,0 +1,49 @@
+name: Build Temple Escape
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: npm run build:web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: temple-escape-web
+          path: dist/
+
+  desktop:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: temple-escape-windows
+            command: npm run build:win
+          - os: macos-13
+            artifact: temple-escape-macos-intel
+            command: npm run build:mac
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: ${{ matrix.command }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: release/

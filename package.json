@@ -5,6 +5,9 @@
   "type": "module",
   "description": "Temple Escape remaster — shared web and Steam desktop build",
   "main": "electron/main.cjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build:web": "vite build",
@@ -19,8 +22,8 @@
   },
   "devDependencies": {
     "electron": "37.6.0",
-    "electron-builder": "^26.0.12",
-    "vite": "^7.1.0"
+    "electron-builder": "24.13.3",
+    "vite": "6.0.5"
   },
   "build": {
     "appId": "com.josephdola.templeescape",

@@ -91,7 +91,7 @@ function cellPos(x,z){return new THREE.Vector3((x-(N-1)/2)*CELL,0,(z-(N-1)/2)*CE
 function buildTemple(){clearWorld();generateMaze();const stone=matStone(),floorMat=matFloor();
  // foundation + ceiling slabs per cell with slight gaps for depth
  for(let z=0;z<N;z++)for(let x=0;x<N;x++){const p=cellPos(x,z);const f=new THREE.Mesh(new THREE.BoxGeometry(CELL,.3,CELL),floorMat);f.position.set(p.x,-.15,p.z);f.receiveShadow=true;world.add(f);floorRooms.push({x,z,p:p.clone()});const ceil=new THREE.Mesh(new THREE.BoxGeometry(CELL,.35,CELL),stone);ceil.position.set(p.x,H+.18,p.z);ceil.receiveShadow=true;world.add(ceil);
- const c=maze[z][x];if(c.n)addBox(p.x,H/2,p.z-CELL/2,CELL+W,H,W,stone,true);if(c.w)addBox(p.x-CELL/2,H/2,p.z,W,H,CELL+W,stone,true);if(z===N-1&&c.s)addBox(p.x,H/2,p.z+CELL/2,CELL+W,H,W,stone,true);if(x===N-1&&c.e)addBox(p.x+CELL/2,H/2,p.z,W,H,CELL+W,stone,true);
+ const c=maze[z][x];if(c.n)addBox(p.x,H/2,p.z-CELL/2,CELL+WALL,H,WALL,stone,true);if(c.w)addBox(p.x-CELL/2,H/2,p.z,WALL,H,CELL+WALL,stone,true);if(z===N-1&&c.s)addBox(p.x,H/2,p.z+CELL/2,CELL+WALL,H,WALL,stone,true);if(x===N-1&&c.e)addBox(p.x+CELL/2,H/2,p.z,WALL,H,CELL+WALL,stone,true);
  const id=navNodes.length;gridToNode[`${x},${z}`]=id;navNodes.push({id,x,z,pos:new THREE.Vector3(p.x,0,p.z),neighbors:[],vent:false});}
  // graph normal edges
  for(const n of navNodes){const c=maze[n.z][n.x];for(const [dx,dz,k] of [[0,-1,'n'],[1,0,'e'],[0,1,'s'],[-1,0,'w']])if(!c[k]){const nn=gridToNode[`${n.x+dx},${n.z+dz}`];if(nn!==undefined)n.neighbors.push({to:nn,cost:1,vent:false});}}

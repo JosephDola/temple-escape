@@ -29,7 +29,7 @@ jobs:
           for f in .release/v2/part*.b64; do
             base64 -d "$f" >> TempleEscape.html
           done
-          echo "dfc3bc6d7d9304b4c9b9c1d3a003295a029ed1d61731200dae480064a42627d6  TempleEscape.html" | sha256sum -c -
+          echo "2edb63973c0c056e06c1a44fb207ae4db4e327e7bcd562d24e3782df3a1c5d51  TempleEscape.html" | sha256sum -c -
 
       - name: Commit canonical game file
         shell: bash

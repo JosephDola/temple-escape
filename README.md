@@ -6,7 +6,7 @@
 
 Download **`TempleEscape.html`** and open it in Chrome, Edge, or Firefox.
 
-> Best played fullscreen with headphones. The game is a single HTML file; Three.js r128 is loaded from jsDelivr when the file starts.
+> Best played fullscreen with headphones. The game is a single HTML file; Three.js r140 is loaded from jsDelivr when the file starts.
 
 ## 🆕 v2.0 — The Descent
 
@@ -67,7 +67,7 @@ This is a full rebuild of the old Temple Escape loop rather than another small v
 ## 🛠️ Tech
 
 - HTML5 + JavaScript
-- Three.js r128
+- Three.js r140
 - Web Audio API
 - Pointer Lock API
 - Canvas-generated procedural materials

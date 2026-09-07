@@ -1,96 +1,78 @@
-# 🏛️ Temple Escape — Horror Edition
+# 🏛️ Temple Escape — The Descent
 
-> *A first-person browser horror game. One file. No install. Just dread.*
+> *A first-person browser horror game built to feel like a desktop horror title: dynamic pursuit, vent crawling, a physical flashlight, procedural temple layouts, and no countdown clock.*
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
-![Three.js](https://img.shields.io/badge/Three.js-r128-black?style=flat&logo=three.js)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+## 🎮 Play
 
----
+Download **`TempleEscape.html`** and open it in Chrome, Edge, or Firefox.
 
-## 🎮 Play It
+> Best played fullscreen with headphones. The game is a single HTML file; Three.js r128 is loaded from jsDelivr when the file starts.
 
-Download **`TempleEscape.html`** and open it in any modern browser. No server needed, no install, no dependencies — everything is bundled into the single file.
+## 🆕 v2.0 — The Descent
 
-> **Best played:** Chrome or Firefox, fullscreen, headphones on, lights off.
+This is a full rebuild of the old Temple Escape loop rather than another small v1.x patch.
 
----
+### Enemy AI + rig
+
+- Code-rigged 3D entity with articulated head, jaw, torso, arms, legs, hands/feet and cloak.
+- Separate standing/walking and low-profile **vent crawl** poses.
+- A* navigation over the generated temple graph.
+- Patrol, investigate, hunt and search behavior.
+- Tracks the player's last seen and last heard locations.
+- Sprinting is much louder than crouching.
+- The flashlight can expose the player at long range.
+- The enemy can choose vent shortcuts and **follow the player into vents** without teleporting.
+- Close-range capture triggers a camera-space jumpscare sequence.
+
+### Player + horror presentation
+
+- First-person arms and a visible handheld flashlight model.
+- Flashlight beam is physically attached to the camera/viewmodel and has battery drain/flicker.
+- Walk/sprint head bob and viewmodel sway.
+- Crouch/vent camera height and muffled movement behavior.
+- Procedural horror ambience, footsteps, vent clangs, seal sounds, whispers and jumpscare stinger using Web Audio.
+- Fog, dynamic torch flicker, shadows, procedural stone/floor/metal materials, rubble and dust particles.
+- Film-grain and vignette presentation.
+
+### Level + objective redesign
+
+- No five-minute timer.
+- Procedurally generated 9×9 temple with extra navigation loops.
+- Five physical vent routes integrated into the AI navigation graph.
+- Restore **3 ancient seal mechanisms** and reach the descent gate.
+- Vents are traversal options, not safe zones.
+
+### Graphics settings
+
+- Low / Medium / High / Ultra presets.
+- Render scale control.
+- FOV and mouse sensitivity controls.
+- Optional head bob and film grain.
+- Shadow and particle density scale with the selected preset.
+- Settings persist in local storage.
 
 ## 🕹️ Controls
 
 | Key | Action |
-|-----|--------|
+|---|---|
 | `W A S D` | Move |
-| `Mouse` | Look around |
-| `Shift` | Sprint (drains stamina) |
-| `Space` | Jump |
-| `E` | Pick up key / Pull lever |
-| `F` | Toggle flashlight |
-| `M` | Toggle background music |
-| `Esc` / alt-tab | Auto-pause |
+| `Mouse` | Look |
+| `Shift` | Sprint |
+| `Ctrl` / `C` | Crouch / crawl |
+| `F` | Flashlight |
+| `E` | Interact / restore seals / enter vents / use exit |
+| `Space` | Jump when not crouched/in a vent |
+| `Esc` | Pause / release mouse |
 
----
+## 🛠️ Tech
 
-## 🎯 Objective
-
-1. Find all **5 color-coded keys** scattered through the procedurally generated maze
-2. Bring each key to its **matching-color lever** and press `E` to pull it
-3. Once all 5 levers are pulled, the **exit portal** opens
-4. Your **compass** activates — follow it to the exit and escape
-
-> ⚠️ Something is already in the maze when you arrive. It is not friendly.
-
----
-
-## 👻 The Entity
-
-The entity does **not** simply chase you. It uses three different behaviours:
-
-- **Patrol** — wanders the halls independently from the moment it awakens (5 seconds after you start). You may turn a corner and find it standing there.
-- **Visible approach** — appears down a corridor in your line of sight and slowly creeps toward you. You have time to run.
-- **Stalk** — spawns behind you and *only moves while you are not looking at it*. Turn around to freeze it in place.
-- **Behind jumpscare** — teleports directly behind you; your camera snaps to face it.
-- **Front jumpscare** — appears right in front of you out of nowhere, then vanishes.
-
-Jumpscares do **not** deal damage — they are pure psychological horror.
-
----
-
-## ✨ Features
-
-- **Procedurally generated maze** — 13×13 grid (169 rooms) using recursive backtracker DFS; different layout every run
-- **Fully self-contained** — all audio baked in as base64; works completely offline
-- **Real uploaded audio** — walking footsteps, running footsteps, breathing (fast/slow crossfade), jumpscare stinger, random spooky ambience
-- **Procedural horror music** — layered drone oscillators + evolving pad + shimmer + randomised tension stabs, generated live via Web Audio API
-- **Breathing system** — fast breathing while sprinting, slow recovery breathing until stamina fully restores
-- **Custom-built horror entity** — fully rigged character (torso, arms, legs, head, cloak strips, glowing eyes) built entirely from Three.js primitives; walk animation driven by code, not a keyframe file
-- **Color-coded key/lever puzzle** — 5 keys, 5 levers; keys shown as inventory dots in HUD
-- **Rotating compass** — points to the exit once all levers are pulled
-- **Pause on tab switch** — game auto-pauses if you alt-tab or lose pointer lock; audio suspends cleanly
-- **Stamina system** — sprint only drains while actually moving; exhaustion locks sprint until 30% recovery
-- **Spike traps** — 2 random trap rooms
-- **Battery-powered flashlight** — drains over time; find batteries to recharge; flickers when low
-- **5-minute timer** — red alarm when under 60 seconds
-
----
-
-## 🛠️ Tech Stack
-
-| Library | Version | Purpose |
-|---------|---------|---------|
-| [Three.js](https://threejs.org/) | r128 | 3D rendering, scene, lighting |
-| Web Audio API | native | All audio (procedural music + real samples) |
-| Pointer Lock API | native | Mouse-look input |
-
-No build step. No npm. No bundler. Pure HTML + JavaScript.
-
----
+- HTML5 + JavaScript
+- Three.js r128
+- Web Audio API
+- Pointer Lock API
+- Canvas-generated procedural materials
+- No npm or build step required to play
 
 ## 📄 License
 
-MIT — do whatever you want with it, attribution required.
-
----
-
-*Built with Three.js and a lot of Web Audio API elbow grease.*
+MIT. See `LICENSE`.

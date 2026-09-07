@@ -1,0 +1,60 @@
+name: Publish Temple Escape v2.0
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.release/v2/**'
+      - 'RELEASE_NOTES_v2.0.md'
+      - '.github/workflows/release-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Assemble validated game
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > TempleEscape.html
+          for f in .release/v2/part*.b64; do
+            base64 -d "$f" >> TempleEscape.html
+          done
+          echo "dfc3bc6d7d9304b4c9b9c1d3a003295a029ed1d61731200dae480064a42627d6  TempleEscape.html" | sha256sum -c -
+
+      - name: Commit canonical game file
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add TempleEscape.html
+          if ! git diff --cached --quiet; then
+            git commit -m "release: Temple Escape v2.0 — The Descent [skip ci]"
+            git push origin HEAD:main
+          fi
+
+      - name: Publish v2.0 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="$(git rev-parse HEAD)"
+          if gh release view v2.0 >/dev/null 2>&1; then
+            gh release upload v2.0 TempleEscape.html --clobber
+          else
+            gh release create v2.0 TempleEscape.html \
+              --target "$TARGET" \
+              --title "Temple Escape v2.0 — The Descent" \
+              --notes-file RELEASE_NOTES_v2.0.md
+          fi

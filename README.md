@@ -1,8 +1,8 @@
-# Temple Escape: Last Descent
+# Temple Escape: Last Descent — The Hunt
 
 An offline first-person survival horror chapter, built on Temple Escape: Reawakened. Restore power, uncover the sanctuary's secrets, and reach the surface while the Hollow hunts through the temple and its ducts.
 
-**[Download TempleEscape-v3.0.0.html](https://github.com/JosephDola/temple-escape/releases/download/v3.0.0/TempleEscape-v3.0.0.html)** · [Latest release](https://github.com/JosephDola/temple-escape/releases/latest)
+**[Download TempleEscape-v3.1.0.html](https://github.com/JosephDola/temple-escape/releases/download/v3.1.0/TempleEscape-v3.1.0.html)** · [Latest release](https://github.com/JosephDola/temple-escape/releases/latest)
 
 Download the HTML asset and open it in a browser with WebGL 2. The file embeds the game, textures, character rigs, and animations. It opens at the title screen and plays offline. No installer, Terminal, server, Firebase, login, ChatGPT account, or hosted-site redirect is required. The source ZIP is for development; the HTML release asset is the game.
 
@@ -19,9 +19,9 @@ Download the HTML asset and open it in a browser with WebGL 2. The file embeds t
 
 ## The Hollow
 
-The Quaternius creature has an actual 18-bone skeleton, walking and attack clips, and Basalt, Ash, and Oxide skins. Additional animation layers add breathing, head movement, reflective eyes, and tentacle motion while crawling. Catching the player triggers an animated capture scene; a gentler effect is available in Settings.
+The Quaternius creature has an actual 18-bone skeleton, walking and attack clips, and Basalt, Ash, and Oxide skins. Additional animation layers add breathing, head movement, reflective eyes, and tentacle motion. v3.1 strengthens those bounded motion layers during chase and crawl states without replacing the original skeletal clips. Catching the player triggers an animated capture scene; a gentler effect is available in Settings.
 
-The hunter uses collision-aware routes and senses sight, footsteps, flashlight visibility, and noisy interactions. It follows its last observation, searches nearby rooms and vents, then returns to patrol. After witnessing repeated vent entries, it can try an alternate route to the opposite exit. It does not learn vent use from hidden player positions. Breaking sight, switching off the light, and moving quietly can lose it. A locker cannot protect you if it saw you enter.
+The hunter uses collision-aware routes and senses sight, footsteps, flashlight visibility, and noisy interactions. Chase navigation now recalculates more frequently than patrol, and vents have different navigation costs depending on whether the creature is pursuing, searching, investigating, or roaming. After losing sight, the Hollow searches nearby vent mouths, room centers, and surrounding cells while avoiding immediate repeats before returning to patrol. It can still try an alternate route to the opposite vent exit after witnessing repeated entries, and hidden player movement is not used to teach this behavior. Breaking sight, switching off the light, and moving quietly can lose it. A locker cannot protect you if it saw you enter.
 
 Sound pans with the camera, attenuates with distance, and muffles through walls. Footsteps change between stone, metal, water, and ducts. Creature breathing, pursuit steps, distant vent clanging, drips, a heartbeat, and quieter intervals create tension. Sounds are synthesized locally; no streaming or voice service is needed.
 
@@ -56,7 +56,8 @@ Node 18 or newer:
 
 ```sh
 npm ci --ignore-scripts
-npm run restore:assets
+TEMPLE_RELEASE_VERSION=3.0.0 node scripts/restore-html.mjs
+TEMPLE_RELEASE_VERSION=3.0.0 node scripts/extract-assets.mjs
 npm run dev
 ```
 
@@ -66,8 +67,8 @@ npm run build:html
 node scripts/verify-standalone.mjs
 ```
 
-`.release/v3.0.0` contains a compressed copy of the offline HTML. `restore-html.mjs` checks its hash before restoring it; `extract-assets.mjs` restores the embedded models and textures for development. The release workflow restores these resources, runs gameplay and geometry checks, checks the offline file, and attaches it to a new GitHub release.
+`.release/v3.0.0` is retained as a checksum-verified embedded-resource source. The current release workflow restores those models and textures, runs gameplay/geometry/rig checks, builds a fresh standalone HTML from the current source, verifies the generated file and checksum, and only then publishes the new release. Pull requests run the same verification path without publishing.
 
-Validation covers complete objective progression, locked-room access, continuous slopes, both seal orders, checkpoint recovery, actual equipment collisions, complete bidirectional vent traversal, hunter routes to every task, doors, perception memory, sound occlusion, and the shipped creature rig. Browser visual playtesting and Mac frame-rate measurements remain outstanding.
+Validation covers complete objective progression, locked-room access, continuous slopes, both seal orders, checkpoint recovery, actual equipment collisions, complete bidirectional vent traversal, hunter routes to every task, doors, perception memory, sound occlusion, chase repath cadence, vent weighting, and the shipped creature rig. Browser visual playtesting and Mac frame-rate measurements remain outstanding.
 
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for asset sources and license details. Multiplayer and voice chat are reserved for a later update.

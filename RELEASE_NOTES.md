@@ -1,28 +1,27 @@
-# Temple Escape v3.0.0 — Last Descent
+# Temple Escape v3.1.0 — The Hunt
 
-Download **TempleEscape-v3.0.0.html** from Assets and open it in a browser with WebGL 2. The game, models, animations, and textures are embedded. It opens straight to the title screen and works offline, with no Firebase, login, or ChatGPT site redirect.
+Download **TempleEscape-v3.1.0.html** from Assets and open it in a browser with WebGL 2. The game, models, animations, and textures are embedded in one file. It opens straight to the title screen and works offline, with no Firebase, login, ChatGPT site redirect, installer, or server.
 
-## Explore, complete tasks, escape
+## Hunter refinement
 
-- Expanded the Reawakened base into nine authored areas across three connected elevations, with about 3.8× the original maze's floor area.
-- Added galleries, divided burial chambers, slopes, signs, machinery, flooded rooms, and a locked Escape Wing.
-- Replaced crystals with eleven tasks: power, drainage, key, archive log, two ritual mechanisms, artifact, surface code, and escape.
-- Removed the map entirely. J opens a task-and-notes journal. No countdown.
-- Added five continuous vent routes with physical crawling and corners, a lower camera, narrower flashlight beam, and duct sounds. The creature can follow.
-- Added slow door operation, closing doors behind you, lockers, throwable distractions, supplies, steam hazards, and local checkpoints. Repairs and mechanisms attract attention.
+- Chase navigation now recalculates routes more aggressively than patrol or search, so sudden turns and changed player routes are handled sooner without teleporting through geometry.
+- The Hollow now values vents differently depending on its state: pursuit favors useful duct shortcuts, local search considers vent mouths more often, and normal patrol avoids overusing them.
+- Lost-sight searches are more deliberate. The hunter alternates between nearby vent mouths, room centers, and surrounding cells instead of repeatedly picking the same search point.
+- Chase crawl speed is now distinct from patrol crawl speed, making duct pursuit feel intentional while the player still keeps the faster full sprint in open halls.
+- The creature rig has stronger bounded chase/crawl motion, including more responsive tentacle movement, breathing sway, face tracking, and eye-reflection pulsing. Procedural offsets still restore cleanly between animation frames.
 
-## The hunt
+## Last Descent remains intact
 
-- The actual 18-bone Quaternius creature has three skins, skeletal walking/attack animations, and additional breathing, head, eye, and crawl effects.
-- Pursuit uses the real collision geometry and elevation changes. The hunter investigates sound, remembers its last sighting, searches rooms and vents, and returns to patrol.
-- Repeated vent use that it witnesses can trigger an attempt to reach the other exit. Hidden movement is not used to teach this behavior.
-- Added pursuit footsteps, positional breathing and clanging, wall muffling, surface-specific footsteps, and quiet intervals.
-- Catching the player triggers an animated capture scene with an optional gentler effect.
+- Nine authored areas across three connected elevations with no map and no countdown.
+- Eleven escape tasks, physical vents, slow doors, lockers, decoys, supplies, steam hazards, flooded movement, checkpoints, and a held flashlight.
+- The actual 18-bone Quaternius creature, three skins, skeletal animation clips, positional creature audio, wall muffling, and capture sequence remain part of the offline build.
+- Vent prediction still only uses witnessed behavior; hidden player movement is not used to teach the hunter exits.
+- Multiplayer and voice chat remain future work while the single-player horror loop is refined.
 
-A physical flashlight follows the player's hand. Graphics presets and controls include resolution, textures, flashlight shadows, fog, FXAA, bloom, SSAO, sharpness, and grain. Water uses wet materials and subtle motion, not real-time reflections. DLSS and hardware ray tracing are not included.
+## Build and validation
+
+The release pipeline now rebuilds a fresh standalone HTML from the current source instead of treating the previous 20 MB file as the final code. Existing embedded v3.0 resources are checksum-verified, restored for the build, then re-embedded with the v3.1 source. Pull requests run gameplay/geometry/rig checks and standalone-file verification before merge; the main branch publishes the verified single-file release.
 
 **Controls:** WASD move · Mouse look · Shift sprint · C crouch · E use/hold to work · F light · J journal · Q decoy · Esc pause.
 
-Gameplay, actual geometry/rig checks, and offline-file integrity checks passed. Browser visual playtesting and Mac performance remain unverified. Start with Performance settings on older hardware. Checkpoints are local to the browser/device; Continue returns to the Upper Temple with saved tasks.
-
-Asset sources and licenses are attached in THIRD_PARTY_NOTICES.md. No paid runtime service or additional app subscription is required. Multiplayer and voice chat are planned for a later update.
+Browser visual playtesting and Mac frame-rate measurements are still the remaining manual checks. Start with Performance settings on older hardware. Asset sources and licenses remain in THIRD_PARTY_NOTICES.md.

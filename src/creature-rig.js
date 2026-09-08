@@ -14,14 +14,20 @@ export function createCreatureRig(model){
   joints,eyes,
   restore(){for(const j of joints)j.bone.quaternion.copy(j.pose);},
   apply(time,{crawl=0,moving=false,chase=false,look=0,illuminated=false}={}){
+   const moveRate=moving?(chase?10.5:7.5):2.1;
    for(const [i,j]of joints.entries()){
-    const {bone}=j;j.pose.copy(bone.quaternion);let x=0,y=0,z=0;
-    if(/Center/.test(bone.name)){z=Math.sin(time*(chase?4.4:1.8)+i*.7)*.018;x=-crawl*.09;}
-    if(/Tentacle/.test(bone.name)){x=Math.sin(time*(moving?8:2.2)+i*1.3)*(.025+crawl*.16);z=Math.cos(time*6+i*.9)*crawl*.07;}
-    if(/TopFace|FrontFace/.test(bone.name)){y=THREE.MathUtils.clamp(look,-.6,.6)*.2;x=Math.sin(time*2.5)*.02-crawl*.11;}
+    const {bone}=j;j.pose.copy(bone.quaternion);let x=0,y=0,z=0;const phase=time*moveRate+i*.83;
+    if(/Center/.test(bone.name)){z=Math.sin(time*(chase?5.2:1.8)+i*.7)*(.018+(chase?.012:0));x=-crawl*.095+Math.sin(time*2.3+i)*.008;}
+    if(/Tentacle/.test(bone.name)){x=Math.sin(phase+i*.47)*(.028+crawl*.17+(chase?.025:0));z=Math.cos(phase*.72+i*.9)*(.012+crawl*.075);y=Math.sin(phase*.45+i)*chase*.018;}
+    if(/TopFace|FrontFace/.test(bone.name)){y=THREE.MathUtils.clamp(look,-.7,.7)*.23;x=Math.sin(time*(chase?3.4:2.3)+i*.3)*.022-crawl*.115;z=Math.sin(time*1.7+i)*crawl*.02;}
+    if(/Jaw|Mouth/i.test(bone.name)){x+=Math.sin(time*(chase?8:3)+i)*(.018+(chase?.03:0));}
     rotation.set(x,y,z);offset.setFromEuler(rotation);bone.quaternion.multiply(offset).normalize();
    }
-   for(const [i,eye]of eyes.entries()){eye.material.opacity=illuminated?.5+.25*Math.sin(time*2+i):.015;eye.scale.setScalar(1+(chase?.15:0));}
+   for(const [i,eye]of eyes.entries()){
+    const pulse=.5+.5*Math.sin(time*(chase?5.5:2)+i*1.7),base=illuminated?.42:.008;
+    eye.material.opacity=THREE.MathUtils.clamp(base+(illuminated?.28:.012)*pulse+(chase?.08:0),0,.8);
+    eye.scale.setScalar(1+(chase?.16:.03)*pulse);
+   }
   },
  };
 }

@@ -1,57 +1,81 @@
-name: Release Temple Escape offline HTML
+name: Verify and release Temple Escape offline HTML
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-hollow.yml'
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'THIRD_PARTY_NOTICES.md'
+      - 'RELEASE_NOTES.md'
   push:
     branches: [main]
     paths:
       - '.github/workflows/release-hollow.yml'
-      - '.release/v3.0.0/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'THIRD_PARTY_NOTICES.md'
+      - 'RELEASE_NOTES.md'
 
 permissions:
   contents: write
 
 concurrency:
-  group: temple-escape-hollow-release
+  group: temple-escape-v3-1-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  release:
+  verify-and-release:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install geometry test dependency
-        run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
-      - name: Verify release bytes and offline resources
+      - name: Install build and test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Restore embedded v3.0 resources
         run: |
-          node scripts/restore-html.mjs
+          TEMPLE_RELEASE_VERSION=3.0.0 node scripts/restore-html.mjs
+          TEMPLE_RELEASE_VERSION=3.0.0 node scripts/extract-assets.mjs
+      - name: Check gameplay, geometry, equipment and creature rig
+        run: npm test
+      - name: Build fresh v3.1 offline HTML
+        run: npm run build:html
+      - name: Verify offline file and checksum
+        run: |
           cd standalone
           sha256sum --check SHA256SUMS.txt
           cd ..
           node scripts/verify-standalone.mjs
-          node scripts/extract-assets.mjs
-      - name: Check gameplay logic, equipment and creature rig
-        run: node --test tests/*.test.js
-      - name: Publish a new release with download assets
+      - name: Publish v3.1.0 download
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if gh release view v3.0.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'v3.0.0 already exists; leaving its assets unchanged.'
+          if gh release view v3.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'v3.1.0 already exists; leaving its assets unchanged.'
             exit 0
           fi
-          gh release create v3.0.0 \
-            standalone/TempleEscape-v3.0.0.html \
+          gh release create v3.1.0 \
+            standalone/TempleEscape-v3.1.0.html \
             standalone/SHA256SUMS.txt \
             THIRD_PARTY_NOTICES.md \
             --target "$GITHUB_SHA" \
             --repo "$GITHUB_REPOSITORY" \
-            --title 'Temple Escape v3.0.0 — Last Descent' \
+            --title 'Temple Escape v3.1.0 — The Hunt' \
             --notes-file RELEASE_NOTES.md \
             --latest

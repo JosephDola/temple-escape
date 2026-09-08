@@ -4,26 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#090f10" />
-  <meta name="description" content="Recover five crystals, outwit the Guardian, and escape an ancient temple. Temple Escape: The Hollow." />
-  <title>Temple Escape: The Hollow</title>
+  <meta name="description" content="Restore power, uncover the surface code, and survive the Hollow. A complete offline escape chapter with tasks, vents, and checkpoints." />
+  <title>Temple Escape: Last Descent</title>
   <link rel="icon" href="data:," />
 </head>
 <body>
   <div id="game" aria-label="Temple Escape 3D game"></div>
   <div id="vignette" aria-hidden="true"></div>
   <section id="menu" class="screen menu-screen" aria-labelledby="gameTitle">
-    <header class="menu-header"><span class="wordmark">TE<span class="wordmark-line"></span></span><span>TEMPLE ESCAPE <b>2.1</b></span><button id="settingsBtn" class="quiet">Settings</button></header>
+    <header class="menu-header"><span class="wordmark">TE<span class="wordmark-line"></span></span><span>TEMPLE ESCAPE <b>3.0</b></span><button id="settingsBtn" class="quiet">Settings</button></header>
     <div class="menu-panel">
-      <p class="eyebrow"><span class="dash"></span> CHAPTER I · THE FORGOTTEN GATE</p>
+      <p class="eyebrow"><span class="dash"></span> CHAPTER I · LAST DESCENT</p>
       <h1 id="gameTitle">TEMPLE<br>ESCAPE</h1>
-      <p class="chapter">T H E  H O L L O W</p>
-      <p class="tagline">Five crystals. One way out.<br>Listen. Hide. Find the gate.</p>
-      <div class="menu-actions"><button id="playBtn" class="primary enter-button" disabled><span id="playLabel">Opening the temple…</span><span aria-hidden="true">↗</span></button></div>
+      <p class="chapter">L A S T  D E S C E N T</p>
+      <p class="tagline">The way to the surface is sealed.<br>Restore power. Follow the clues. Stay alive.</p>
+      <div class="menu-actions"><button id="continueBtn" class="primary enter-button hidden">Continue checkpoint <span aria-hidden="true">↗</span></button><button id="playBtn" class="primary enter-button" disabled><span id="playLabel">Opening the temple…</span><span aria-hidden="true">↗</span></button></div>
       <p id="loadStatus" role="status" class="status-text">Preparing your descent</p>
       <button id="reloadBtn" class="quiet hidden">Try loading again</button>
     </div>
-    <div class="menu-location"><span class="eyebrow">THE FORGOTTEN GATE</span><span>Find its scattered light.</span></div>
-    <footer class="menu-footer"><span id="platformTag">OFFLINE EDITION · HEADPHONES RECOMMENDED</span><span>WASD to move <i>·</i> Mouse to look <i>·</i> E to collect</span></footer>
+    <div class="menu-location"><span class="eyebrow">BENEATH THE SURFACE</span><span>Something else is listening.</span></div>
+    <footer class="menu-footer"><span id="platformTag">OFFLINE EDITION · HEADPHONES RECOMMENDED</span><span>WASD to move <i>·</i> Mouse to look <i>·</i> E to interact</span></footer>
   </section>
 
   <section id="settings" class="screen modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
@@ -48,9 +48,8 @@
       <label class="row"><span>Camera motion</span><input id="shakeToggle" type="checkbox"></label>
       <label class="row"><span>Sound & ambience</span><input id="audioToggle" type="checkbox" checked></label>
       <label class="row"><span>Show first-person arms</span><input id="armsToggle" type="checkbox" checked></label>
-      <label class="row"><span>Keep map visible</span><input id="mapToggle" type="checkbox"></label>
       <label class="row"><span>Gentler capture effect</span><input id="reducedScareToggle" type="checkbox"></label>
-      <p class="settings-note">Hold M to check explored passages. C toggles crouching; Ctrl holds it. You cannot stand up inside a vent.</p>
+      <p class="settings-note">J opens your task-and-notes journal. Follow signs and landmarks to find your way. C toggles crouching; Ctrl holds it. You cannot stand up inside a vent.</p>
       <p class="fine-print">Textures and temple detail change on your next descent. Other settings apply when you close this menu. Performance mode is the best starting point for an older Mac.</p>
       <details class="credits"><summary>Asset credits</summary><p>Creature: Maw Gooey by Quaternius. Original rig and animations adapted for Temple Escape. Arms and stone textures carried forward from the supplied project. See THIRD_PARTY_NOTICES.md in the release.</p></details>
       </fieldset></div>
@@ -60,19 +59,29 @@
     <div class="card small"><p class="eyebrow">TAKE A BREATH</p><h2 id="pauseTitle">Paused</h2><p id="pauseHint">Your descent will wait.</p><button id="resumeBtn" class="primary">Resume descent</button><button id="pauseSettingsBtn">Settings</button><button id="quitBtn" class="quiet">Return to menu</button></div>
   </section>
   <section id="endScreen" class="screen modal hidden" role="dialog" aria-modal="true" aria-labelledby="endTitle">
-    <div class="card small"><p id="endEyebrow" class="eyebrow">THE GATE AWAKENS</p><h2 id="endTitle">Escaped</h2><p id="endText">You made it through.</p><div id="runStats" class="run-stats"></div><button id="retryBtn" class="primary">New descent</button><button id="endMenuBtn" class="quiet">Return to menu</button></div>
+    <div class="card small"><p id="endEyebrow" class="eyebrow">THE GATE AWAKENS</p><h2 id="endTitle">Escaped</h2><p id="endText">You made it through.</p><div id="runStats" class="run-stats"></div><button id="endContinueBtn" class="primary hidden">Continue checkpoint</button><button id="retryBtn">New escape</button><button id="endMenuBtn" class="quiet">Return to menu</button></div>
   </section>
   <div id="hud" class="hidden">
-    <div class="hud-top"><div class="objective-panel"><p class="eyebrow">THE FORGOTTEN GATE</p><div class="crystal-line"><span class="crystal-icon" aria-hidden="true">◆</span><strong id="crystalCount">0 / 5</strong><span>CRYSTALS</span></div><p id="objectiveText">Recover the gate crystals</p></div><div class="map-wrap"><canvas id="minimap" width="220" height="220" aria-label="Map of explored passages, vents, crystals, and your position"></canvas><span>THE TEMPLE <b>N ↑</b></span></div></div>
+    <div class="hud-top"><div class="objective-panel"><p class="eyebrow">ESCAPE THE HOLLOW <span id="taskCount">0 / 11</span></p><strong id="taskTitle">Find the replacement fuse</strong><p id="objectiveText">A spare fuse was left in Maintenance.</p><button id="hudJournal" class="hud-link"><kbd>J</kbd> Task journal</button></div></div>
+    <div class="location-banner"><span id="locationName">UPPER TEMPLE</span><span id="inventoryText">3 STONES · Q</span></div>
     <div id="toast" class="toast hidden" role="status"></div>
     <div id="warning" class="warning hidden" role="status">THE GUARDIAN IS SEARCHING</div>
     <div id="crosshair" aria-hidden="true"></div>
-    <div id="prompt" class="prompt hidden"><kbd>E</kbd> Collect crystal</div>
+    <div id="prompt" class="prompt hidden">E · Interact</div><div id="interactionBar" class="interaction-progress hidden"><i id="interactionFill"></i></div>
     <div class="hud-bottom"><div class="meter"><div class="label"><span>FLASHLIGHT <kbd>F</kbd></span><strong id="batteryText">100%</strong></div><div class="bar"><i id="batteryBar"></i></div></div><div class="meter stamina-meter"><div class="label"><span>STAMINA</span><span>SHIFT TO SPRINT</span></div><div class="bar"><i id="staminaBar"></i></div></div><div class="meter"><div class="label"><span>HEALTH</span><strong id="healthText">100</strong></div><div class="bar red"><i id="healthBar"></i></div></div></div>
-    <div class="control-hint">C <span>crouch</span> <i>·</i> M <span>hold map</span> <i>·</i> E <span>collect</span> <i>·</i> F <span>light</span> <i>·</i> ESC <span>pause</span></div><div class="status-corner"><span id="posture">STANDING</span><span id="fpsText"></span></div>
+    <div class="control-hint">C <span>crouch</span> <i>·</i> J <span>journal</span> <i>·</i> Q <span>decoy</span> <i>·</i> E <span>interact</span> <i>·</i> F <span>light</span> <i>·</i> ESC <span>pause</span></div><div class="status-corner"><span id="posture">STANDING</span><span id="fpsText"></span></div>
     <button id="hudPause" class="hud-pause" aria-label="Pause game">Ⅱ</button>
-    <div id="touchControls" class="touch-controls"><div class="touch-pad"><button data-key="KeyW" aria-label="Move forward">↑</button><div><button data-key="KeyA" aria-label="Move left">←</button><button data-key="KeyS" aria-label="Move backward">↓</button><button data-key="KeyD" aria-label="Move right">→</button></div></div><div class="touch-actions"><button id="touchCollect">Collect</button><button id="touchJump">Jump</button><button data-key="ShiftLeft">Sprint</button><button id="touchFlash">Light</button><button id="touchCrouch">Crouch</button><button id="touchMap">Map</button></div></div>
+    <div id="touchControls" class="touch-controls"><div class="touch-pad"><button data-key="KeyW" aria-label="Move forward">↑</button><div><button data-key="KeyA" aria-label="Move left">←</button><button data-key="KeyS" aria-label="Move backward">↓</button><button data-key="KeyD" aria-label="Move right">→</button></div></div><div class="touch-actions"><button id="touchCollect">Use / hold</button><button id="touchJump">Jump</button><button data-key="ShiftLeft">Sprint</button><button id="touchFlash">Light</button><button id="touchCrouch">Crouch</button><button id="touchJournal">Journal</button><button id="touchDecoy">Decoy</button></div></div>
   </div>
+  <section id="journal" class="screen modal journal-screen hidden" role="dialog" aria-modal="true" aria-labelledby="journalTitle">
+    <div class="journal-card"><header><div><p class="eyebrow">FIELD JOURNAL / CHAPTER 01</p><h2 id="journalTitle">Find a way out.</h2></div><button id="journalClose">J · Close journal</button></header>
+      <div class="journal-columns"><div class="journal-content"><ol id="journalTasks"></ol></div><div class="journal-aside"><div class="journal-note"><p class="eyebrow">RECOVERED NOTES</p><p id="journalNotes"></p></div><div class="journal-note"><p class="eyebrow">SURVIVAL NOTES</p><p>Listen before turning a corner. Break its sight, switch off your beam, and move quietly.<br><br>Vents connect the wings. The Hollow fits inside them.<br><br>Lockers work only if it did not see you enter. Throw a stone with Q to draw it away.<br><br>The field recorder in the Upper Temple restores your equipment and saves progress.</p></div></div></div>
+      <footer><span>C · Crouch &nbsp; F · Flashlight &nbsp; Q · Throw a distraction stone</span><span>Autosaves after tasks · Continue returns to Upper Temple</span></footer>
+    </div>
+  </section>
+  <section id="keypad" class="screen modal keypad-screen hidden" role="dialog" aria-labelledby="keypadTitle">
+    <div class="card keypad-card"><p class="eyebrow">EXIT CONTROL / SECURE ACCESS</p><h2 id="keypadTitle">Surface lock</h2><p id="keypadHint">The creature can still move.</p><output id="keypadDisplay" aria-live="polite">___</output><div class="keypad-buttons"><button data-digit="1">1</button><button data-digit="2">2</button><button data-digit="3">3</button><button data-digit="4">4</button><button data-digit="5">5</button><button data-digit="6">6</button><button data-digit="7">7</button><button data-digit="8">8</button><button data-digit="9">9</button><button id="keypadClear">Clear</button><button data-digit="0">0</button><button id="keypadSubmit" class="primary">Enter</button></div><button id="keypadClose" class="quiet">Esc · Step away</button></div>
+  </section>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

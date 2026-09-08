@@ -43,6 +43,6 @@ export function createFlashlight(){
 
 export const SKINS={basalt:{body:0x46514a,eye:0xe5bf71,roughness:.68},ash:{body:0xb7b4a3,eye:0x8abbc1,roughness:.83},oxide:{body:0x704c3b,eye:0xe5a160,roughness:.55}};
 export function skinCreature(model,skinName='basalt'){
- const skin=SKINS[skinName]||SKINS.basalt;
- model.traverse(o=>{if(o.isMesh){o.frustumCulled=false;o.castShadow=true;o.receiveShadow=true;const materials=(Array.isArray(o.material)?o.material:[o.material]).map(m=>{const next=m.clone();next.color?.set(skin.body);next.roughness=skin.roughness;next.metalness=.05;next.emissive?.set(0x101714);next.emissiveIntensity=.08;next.userData.templeOwned=true;if(m.userData.templeOwned)m.dispose();return next;});o.material=Array.isArray(o.material)?materials:materials[0];}});
+ if(!model)return;const skin=SKINS[skinName]||SKINS.basalt;
+ model.traverse(o=>{if(o.userData.eyeGlint){o.material.color.set(skin.eye);return;}if(o.isMesh){o.frustumCulled=false;o.castShadow=true;o.receiveShadow=true;const materials=(Array.isArray(o.material)?o.material:[o.material]).map(m=>{const next=m.clone();next.color?.set(skin.body);next.roughness=skin.roughness;next.metalness=.05;next.emissive?.set(0x101714);next.emissiveIntensity=.08;next.userData.templeOwned=true;if(m.userData.templeOwned)m.dispose();return next;});o.material=Array.isArray(o.material)?materials:materials[0];}});
 }

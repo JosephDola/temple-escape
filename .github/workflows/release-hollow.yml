@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/release-hollow.yml'
-      - '.release/v2.1.0/**'
+      - '.release/v3.0.0/**'
 
 permissions:
   contents: write
@@ -24,8 +24,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check gameplay logic
-        run: node --test tests/*.test.js
+      - name: Install geometry test dependency
+        run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Verify release bytes and offline resources
         run: |
           node scripts/restore-html.mjs
@@ -33,22 +33,25 @@ jobs:
           sha256sum --check SHA256SUMS.txt
           cd ..
           node scripts/verify-standalone.mjs
+          node scripts/extract-assets.mjs
+      - name: Check gameplay logic, equipment and creature rig
+        run: node --test tests/*.test.js
       - name: Publish a new release with download assets
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if gh release view v2.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'v2.1.0 already exists; leaving its assets unchanged.'
+          if gh release view v3.0.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'v3.0.0 already exists; leaving its assets unchanged.'
             exit 0
           fi
-          gh release create v2.1.0 \
-            standalone/TempleEscape-v2.1.0.html \
+          gh release create v3.0.0 \
+            standalone/TempleEscape-v3.0.0.html \
             standalone/SHA256SUMS.txt \
             THIRD_PARTY_NOTICES.md \
             --target "$GITHUB_SHA" \
             --repo "$GITHUB_REPOSITORY" \
-            --title 'Temple Escape v2.1.0 — The Hollow' \
+            --title 'Temple Escape v3.0.0 — Last Descent' \
             --notes-file RELEASE_NOTES.md \
             --latest

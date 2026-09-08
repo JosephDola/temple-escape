@@ -1,11 +1,11 @@
-# Third-party notices — Temple Escape v2.1.0
+# Third-party notices — Temple Escape v3.0.0
 
 ## Creature — Maw Gooey, Quaternius
 
 Original mesh, skeleton and Walk, IdleFinal, Attack and Death animations by Quaternius.
 Source: https://github.com/Quaternius/TestGltfAssets/tree/master/Maw%20Gooey
 Game resource: models/maw-gooey.glb (embedded in the downloadable HTML).
-The game changes its proportions, stone colors, locomotion timing and vent pose.
+The game changes its proportions, stone colors, locomotion timing and vent pose, and adds bounded skeletal effects and eye reflections.
 The existing skeleton is used; this is not a claim that Temple Escape authored the original rig.
 
 Reuse references checked September 8, 2026:

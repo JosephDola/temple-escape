@@ -1,20 +1,29 @@
-# Temple Escape: The Hollow — v2.1.0 plan
+# Last Descent: escape chapter and next steps
 
-The release keeps the temple, five crystals and exit gate. The new direction is exploration and pursuit, with player-controlled light and quiet movement, instead of a countdown.
+Keep the Reawakened engine and improve it system by system. The current chapter is a single-player escape game. Multiplayer and voice chat remain future work.
 
-| Area | Release implementation |
+| System | Implemented in v3.0.0 |
 | --- | --- |
-| Delivery | One offline HTML file with all code, models and texture tiers embedded; GitHub release download |
-| Hunter | Weighted A* routes, collision radius, frequent replanning, field of view, sound investigation, last-known-position search |
-| Vents | Low metal shortcuts with walls, ceiling, entrance frames and crouch-only headroom; traversable by the creature |
-| Creature | Quaternius Maw Gooey, existing skeleton/animations, custom crawling pose, Basalt/Ash/Oxide skins |
-| Equipment | A visible physical flashlight follows the posed right hand; battery recharges while switched off |
-| Horror | Animated capture cutscene, spatial footfalls/scraping, heartbeat and ambient sound; explored-area map shown on demand |
-| Graphics | Warm/cool lighting, stone normal maps, damp floor patches, fog, optional bloom and SSAO; resolution/texture/shadow/FOV/FXAA/sharpness controls |
-| Accessibility | Adjustable sound/brightness/motion; gentler capture option; touch controls retained |
+| Level architecture | 305 active cells inside a 21×21 envelope; nine distinct areas, galleries and burial partitions, interconnected halls, three elevations linked by continuous slopes |
+| Navigation | Environmental signs and landmarks; no map; a task-and-notes journal on J |
+| Objectives | Fuse → generator → drainage → key → archive → log → two seals in either order → ritual artifact → surface code → escape |
+| World changes | Power increases lighting and starts steam leaks; drainage removes water and exposes the key; seals release the artifact cage; doors and escape route unlock |
+| Hunter | Real collision-aware routes, sight and sound, short chase continuation, last-known position, local searches including vents, patrol, witnessed-vent prediction |
+| Creature | Quaternius mesh with 18-bone rig, walking and attack clips, three skins, breathing, head movement, eye reflections and crawl pose overlays |
+| Vents | Five continuous routes, including a seven-edge route with corners; lowered camera and narrow flashlight; creature can physically follow |
+| Interaction | Hold-to-work mechanics, keypad that leaves time running, slow doors that can close behind the player, enemy forcing unlocked doors, lockers and distraction stones |
+| Survival | Flashlight recharge and flicker, surface-dependent footsteps, slower/noisier flooded movement, supplies, steam hazards, task checkpoints and a rest/save recorder |
+| Atmosphere | Positional synthesized sound with distance attenuation and wall muffling, creature breathing, vent clangs, quiet periods, torch motion, wet materials, dust, fog and optional postprocessing |
+| Delivery | Offline HTML on GitHub Releases; title screen without login or Firebase |
 
-No countdown or timeout defeat. Recover all five crystals and reach the gate to win. A creature capture starts the scare sequence and ends the run; traps use the health system.
+The goal is to reach the surface. The first fuse location and surface code vary by seed; major rooms and progression are authored so directions remain meaningful. The two seal tasks allow a limited choice of order. This is not a fully randomized campaign.
 
-The browser uses WebGL 2. It does not contain NVIDIA DLSS, frame generation or ray tracing. Performance is a selectable preset, not a claim of a measured frame rate on a specific Mac.
+Elevations are connected zones, not overlapping stacked floors. Water uses a wet shaded surface and subtle motion, not live mirror reflections. Fog is depth fog; no true volumetric lighting, hardware ray tracing, or DLSS is claimed. The existing creature rig is adapted, not authored from scratch.
 
-Verification covers the gameplay logic, actual rig/animation structure, JavaScript syntax, production compilation and self-contained packaging. Browser playtesting and Mac GPU performance require a real-device pass.
+Doors synchronize the physical collider and route graph while opening. Closing stops when a character occupies the doorway; the creature can force a previously unlocked door after a delay. Hiding works after sight is broken. Sound and witnessed observations inform the hunter; hidden player movement does not update learned vent exits.
+
+Performance mode keeps postprocessing and shadow costs low. Static decorations are batched by material and region. Release gates cover complete objectives, locked areas, actual geometry and floors, bidirectional vent routes, doors, hearing, memory, checkpoints, and the actual rig. Browser visual playtesting and hardware FPS measurements remain outstanding.
+
+GitHub is the connected source and release app. Additional asset-generation plugins were checked; none was necessary and confirmed free for this update. No new app account or paid runtime dependency was added.
+
+Next: playtest chase fairness and performance, refine room dressing and animation, then design multiplayer state ownership and opt-in voice controls before adding a network service.

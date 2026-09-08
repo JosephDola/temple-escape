@@ -15,6 +15,6 @@ for(const [name,url]of Object.entries(assets)){
  }
 }
 let scripts=0;for(const match of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)){if(match[1].includes('application/json'))continue;new vm.Script(match[2]);scripts++;}
-assert.equal(scripts,2);assert.ok(!/<script[^>]+src=/.test(html));assert.ok(!/http-equiv="refresh"|location\.replace\(|chatgpt\.site|TIME REMAINING|timerText/.test(html));
+assert.equal(scripts,2);assert.ok(!/<script[^>]+src=/.test(html));assert.ok(!/http-equiv="refresh"|location\.replace\(|chatgpt\.site|TIME REMAINING|timerText|id="(?:minimap|journalMap|mapToggle|hudMap|touchMap)"|firebaseConfig|firebaseapp\.com|firebase-auth/.test(html));
 const sha=createHash('sha256').update(html).digest('hex');assert.ok((await fs.readFile('standalone/SHA256SUMS.txt','utf8')).startsWith(sha));
-console.log(`Verified ${file}: 14 embedded resources, skeletons/animations, valid scripts, no redirect, no timer, matching SHA-256.`);
+console.log(`Verified ${file}: 14 embedded resources, skeletons/animations, valid scripts, no redirect/login dependency, no map, no timer, matching SHA-256.`);

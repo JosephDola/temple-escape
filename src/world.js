@@ -36,7 +36,7 @@ export const horizontalDistance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function overlapsBox(box,x,z,radius=0){return x+radius>box.x1&&x-radius<box.x2&&z+radius>box.z1&&z-radius<box.z2;}
 export function lineClear(a,b,boxes){
  const dx=b.x-a.x,dz=b.z-a.z;
- for(const box of boxes){let low=0,high=1;for(const [p,d,min,max]of [[a.x,dx,box.x1,box.x2],[a.z,dz,box.z1,box.z2]]){if(Math.abs(d)<1e-9){if(p<min||p>max){low=2;break;}}else{let t0=(min-p)/d,t1=(max-p)/d;if(t0>t1)[t0,t1]=[t1,t0];low=Math.max(low,t0);high=Math.min(high,t1);}}if(low<=high&&low<=1&&high>=0)return false;}return true;
+ for(const box of boxes){if(box.disabled)continue;let low=0,high=1;for(const [p,d,min,max]of [[a.x,dx,box.x1,box.x2],[a.z,dz,box.z1,box.z2]]){if(Math.abs(d)<1e-9){if(p<min||p>max){low=2;break;}}else{let t0=(min-p)/d,t1=(max-p)/d;if(t0>t1)[t0,t1]=[t1,t0];low=Math.max(low,t0);high=Math.min(high,t1);}}if(low<=high&&low<=1&&high>=0)return false;}return true;
 }
 export function canCollect(player,crystal,boxes,radius=2){return crystal.active&&horizontalDistance(player,crystal)<=radius&&Math.abs(player.y-crystal.y)<2.2&&lineClear(player,crystal,boxes);}
 export function trapHits(player,center){return player.y<PLAYER_HEIGHT+.48&&Math.abs(player.x-center.x)<.84&&Math.abs(player.z-center.z)<.28;}
@@ -77,19 +77,21 @@ export function navigationPath(maze,start,goal,{allowVents=true,ventCost=1.9}={}
  }
  if(!previous.has(goal))return [];const out=[];for(let c=goal;c!==start;c=previous.get(c))out.push(c);return out.reverse();
 }
-export function bodyBlocked(boxes,x,z,radius=.3,height=PLAYER_HEIGHT){return boxes.some(b=>(b.y1??0)<height+.08&&(b.y2??10)>.12&&overlapsBox(b,x,z,radius));}
-export function corridorClear(a,b,boxes,radius=.3,height=PLAYER_HEIGHT){
- return lineClear(a,b,boxes.filter(box=>(box.y1??0)<height+.08&&(box.y2??10)>.12).map(box=>({...box,x1:box.x1-radius,x2:box.x2+radius,z1:box.z1-radius,z2:box.z2+radius})));
+export function bodyBlocked(boxes,x,z,radius=.3,height=PLAYER_HEIGHT,feetY=0){return boxes.some(b=>!b.disabled&&(b.y1??0)<feetY+height+.08&&(b.y2??10)>feetY+.12&&overlapsBox(b,x,z,radius));}
+export function corridorClear(a,b,boxes,radius=.3,height=PLAYER_HEIGHT,feetY=0){
+ const ya=typeof feetY==='function'?feetY(a.x,a.z):feetY,yb=typeof feetY==='function'?feetY(b.x,b.z):feetY;
+ return lineClear(a,b,boxes.filter(box=>!box.disabled&&(box.y1??0)<Math.max(ya,yb)+height+.08&&(box.y2??10)>Math.min(ya,yb)+.12).map(box=>({...box,x1:box.x1-radius,x2:box.x2+radius,z1:box.z1-radius,z2:box.z2+radius})));
 }
 export function sightClear(a,b,boxes){
- for(const box of boxes){let near=0,far=1;for(const [p,d,lo,hi]of [[a.x,b.x-a.x,box.x1,box.x2],[a.y,b.y-a.y,box.y1??0,box.y2??10],[a.z,b.z-a.z,box.z1,box.z2]]){
+ for(const box of boxes){if(box.disabled)continue;let near=0,far=1;for(const [p,d,lo,hi]of [[a.x,b.x-a.x,box.x1,box.x2],[a.y,b.y-a.y,box.y1??0,box.y2??10],[a.z,b.z-a.z,box.z1,box.z2]]){
    if(Math.abs(d)<1e-8){if(p<lo||p>hi){near=2;break;}}else{let t1=(lo-p)/d,t2=(hi-p)/d;if(t1>t2)[t1,t2]=[t2,t1];near=Math.max(near,t1);far=Math.min(far,t2);}
   }if(near<=far&&near<=1&&far>=0)return false;
  }return true;
 }
-export function slideBody(pos,dx,dz,boxes,radius=.3,height=PLAYER_HEIGHT){
+export function slideBody(pos,dx,dz,boxes,radius=.3,height=PLAYER_HEIGHT,feetY=0){
+ const floorAt=typeof feetY==='function'?feetY:()=>feetY;
  const n=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.09));let traveled=0;
- for(let i=0;i<n;i++){const ox=pos.x,oz=pos.z;if(!bodyBlocked(boxes,pos.x+dx/n,pos.z,radius,height))pos.x+=dx/n;if(!bodyBlocked(boxes,pos.x,pos.z+dz/n,radius,height))pos.z+=dz/n;traveled+=Math.hypot(pos.x-ox,pos.z-oz);}return traveled;
+ for(let i=0;i<n;i++){const ox=pos.x,oz=pos.z;if(!bodyBlocked(boxes,pos.x+dx/n,pos.z,radius,height,floorAt(pos.x+dx/n,pos.z)))pos.x+=dx/n;if(!bodyBlocked(boxes,pos.x,pos.z+dz/n,radius,height,floorAt(pos.x,pos.z+dz/n)))pos.z+=dz/n;traveled+=Math.hypot(pos.x-ox,pos.z-oz);}return traveled;
 }
 export function updateHunter(brain,{visible,heard,playerCell,playerPosition,reached,dt}){
  brain.memory=Math.max(0,(brain.memory||0)-dt);brain.searchTime=Math.max(0,(brain.searchTime||0)-dt);

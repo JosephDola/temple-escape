@@ -1,20 +1,28 @@
-# Temple Escape v2.1.0 — The Hollow
+# Temple Escape v3.0.0 — Last Descent
 
-Download **TempleEscape-v2.1.0.html** from the release assets, then open it in Chrome or Edge. Everything needed by the game is embedded. No account, ChatGPT sign-in, web hosting, Terminal, install or runtime internet connection is required.
+Download **TempleEscape-v3.0.0.html** from Assets and open it in a browser with WebGL 2. The game, models, animations, and textures are embedded. It opens straight to the title screen and works offline, with no Firebase, login, or ChatGPT site redirect.
 
-- Removed the countdown and timeout defeat.
-- Replaced pursuit with weighted A* routes, radius-aware collision, frequent replanning and sound/last-seen investigation.
-- Added low vents you can crouch through. The creature can enter and crawl after you.
-- Added a Quaternius creature with a working skeleton, idle/move/attack animations and three selectable skins.
-- Added a visible flashlight aligned with the right-hand grip.
-- Added an animated capture sequence, footsteps, metal scraping, heartbeat and ambient sound.
-- Added an explored-area map, shown while holding M, with an optional always-visible setting.
-- Expanded graphics settings: rendering resolution, 1K/2K/4K textures, shadows, fog, FOV, FXAA, bloom, SSAO, sharpness and film grain.
+## Explore, complete tasks, escape
 
-**Controls:** WASD move · Mouse look · Shift sprint · C toggle crouch / Ctrl hold crouch · Space jump · E collect · F light · Hold M map · Esc pause.
+- Expanded the Reawakened base into nine authored areas across three connected elevations, with about 3.8× the original maze's floor area.
+- Added galleries, divided burial chambers, slopes, signs, machinery, flooded rooms, and a locked Escape Wing.
+- Replaced crystals with eleven tasks: power, drainage, key, archive log, two ritual mechanisms, artifact, surface code, and escape.
+- Removed the map entirely. J opens a task-and-notes journal. No countdown.
+- Added five continuous vent routes with physical crawling and corners, a lower camera, narrower flashlight beam, and duct sounds. The creature can follow.
+- Added slow door operation, closing doors behind you, lockers, throwable distractions, supplies, steam hazards, and local checkpoints. Repairs and mechanisms attract attention.
 
-Start with **Performance** on an older Mac. Settings are remembered in the current browser; closing or refreshing ends the current run. WebGL 2 is required. This version uses browser rendering effects, not NVIDIA DLSS.
+## The hunt
 
-**Validation:** maze connectivity and vent generation over 100 seeds, wall-safe pursuit/turning, target changes, crawler entry/exit, sight obstruction, collision sweeping, stamina, pickups and perception checks; production compilation and self-contained HTML checks. Browser playtesting and device-specific frame-rate measurements were not performed.
+- The actual 18-bone Quaternius creature has three skins, skeletal walking/attack animations, and additional breathing, head, eye, and crawl effects.
+- Pursuit uses the real collision geometry and elevation changes. The hunter investigates sound, remembers its last sighting, searches rooms and vents, and returns to patrol.
+- Repeated vent use that it witnesses can trigger an attempt to reach the other exit. Hidden movement is not used to teach this behavior.
+- Added pursuit footsteps, positional breathing and clanging, wall muffling, surface-specific footsteps, and quiet intervals.
+- Catching the player triggers an animated capture scene with an optional gentler effect.
 
-Creature source and asset terms are documented in THIRD_PARTY_NOTICES.md and embedded in the HTML. Earlier releases are preserved.
+A physical flashlight follows the player's hand. Graphics presets and controls include resolution, textures, flashlight shadows, fog, FXAA, bloom, SSAO, sharpness, and grain. Water uses wet materials and subtle motion, not real-time reflections. DLSS and hardware ray tracing are not included.
+
+**Controls:** WASD move · Mouse look · Shift sprint · C crouch · E use/hold to work · F light · J journal · Q decoy · Esc pause.
+
+Gameplay, actual geometry/rig checks, and offline-file integrity checks passed. Browser visual playtesting and Mac performance remain unverified. Start with Performance settings on older hardware. Checkpoints are local to the browser/device; Continue returns to the Upper Temple with saved tasks.
+
+Asset sources and licenses are attached in THIRD_PARTY_NOTICES.md. No paid runtime service or additional app subscription is required. Multiplayer and voice chat are planned for a later update.

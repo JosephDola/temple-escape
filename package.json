@@ -1,9 +1,9 @@
 {
   "name": "temple-escape",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
-  "description": "Temple Escape: The Hollow \u2014 standalone offline horror game",
+  "description": "Temple Escape: Last Descent \u2014 standalone survival horror escape chapter",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",

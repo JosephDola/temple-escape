@@ -42,15 +42,37 @@ export function makeEscapeLevel(seed=1){
   const a=maze[r][c];Object.assign(a,{active:true,room:true,roomId:room.id,floor:room.floor,surface:room.id==='cistern'?'water':['generator','workshop','control'].includes(room.id)?'metal':'stone'});
   if(r>room.r)connect(a,maze[r-1][c]);if(c>room.c)connect(a,maze[r][c-1]);
  }
- // Authored interior walls turn the large zones into galleries and chambers.
+ // Keep interior walls purposeful and leave broad sightline breaks rather than maze-like clutter.
  const partition=(roomId,axis,offset,openings)=>{const room=ROOMS.find(r=>r.id===roomId),length=axis==='x'?room.h:room.w;for(let i=0;i<length;i++){if(openings.includes(i))continue;const a=maze[room.r+(axis==='x'?i:offset)][room.c+(axis==='x'?offset:i)],b=maze[a.r+(axis==='x'?0:1)][a.c+(axis==='x'?1:0)];a[axis==='x'?'e':'s']=true;b[axis==='x'?'w':'n']=true;}};
- partition('arrival','x',1,[1,4]);partition('refuge','z',1,[1,3]);partition('refuge','z',3,[0,3]);partition('archive','x',1,[1,4]);partition('generator','x',3,[1,3]);partition('workshop','z',1,[1,3]);partition('cistern','x',1,[1,3]);partition('exit','z',1,[1,3]);
+ partition('arrival','x',2,[1,4]);partition('refuge','z',1,[1,3]);partition('refuge','z',3,[0,3]);partition('archive','x',2,[1,4]);partition('generator','x',3,[1,3]);partition('workshop','z',1,[1,3]);partition('cistern','x',2,[1,3]);partition('exit','z',1,[1,3]);
+
  const halls=[];
- function hall(r,c,dr,dc,length,label){const a=maze[r][c],b=maze[r+dr*length][c+dc*length],axis=dc?'x':'z',start=(dc?c-(n-1)/2+.5:r-(n-1)/2+.5)*CELL,end=start+(length-1)*CELL;
-  const route=[];for(let i=0;i<=length;i++){const cell=maze[r+dr*i][c+dc*i];route.push(cell);if(i>0)connect(route[i-1],cell);if(i>0&&i<length){cell.floor=a.floor+(b.floor-a.floor)*(i-.5)/(length-1);cell.ramp={axis,start,end,y0:a.floor,y1:b.floor};cell.surface='stone';}}
-  halls.push({a,b,route,label,ramp:a.floor!==b.floor});
+ function hall(r,c,dr,dc,length,label,width=2){
+  const lanes=[],axis=dc?'x':'z';
+  for(let lane=0;lane<width;lane++){
+   const rr=r+(dc?lane:0),cc=c+(dr?lane:0),route=[],a=maze[rr][cc],b=maze[rr+dr*length][cc+dc*length];
+   const dir=dc||dr,start=(axis==='x'?cc-(n-1)/2+(dir>0?.5:-.5):rr-(n-1)/2+(dir>0?.5:-.5))*CELL,end=(axis==='x'?b.c-(n-1)/2-(dir>0?.5:-.5):b.r-(n-1)/2-(dir>0?.5:-.5))*CELL;
+   for(let i=0;i<=length;i++){
+    const cell=maze[rr+dr*i][cc+dc*i];route.push(cell);cell.corridor=true;if(i>0)connect(route[i-1],cell);
+    if(i>0&&i<length){const center=(axis==='x'?cell.c-(n-1)/2:cell.r-(n-1)/2)*CELL,t=Math.max(0,Math.min(1,(center-start)/(end-start)));cell.floor=a.floor+(b.floor-a.floor)*t;cell.ramp={axis,start,end,y0:a.floor,y1:b.floor};cell.surface='stone';}
+   }
+   lanes.push(route);
+  }
+  if(width>1)for(let lane=1;lane<lanes.length;lane++)for(let i=0;i<=length;i++)connect(lanes[lane-1][i],lanes[lane][i]);
+  const route=lanes[0],a=route[0],b=route.at(-1);halls.push({a,b,route,lanes,label,width,ramp:a.floor!==b.floor});
  }
- hall(3,5,0,1,3,'BURIAL / ARCHIVE');hall(3,12,0,1,4,'ARCHIVE');hall(5,3,1,0,3,'LOWER TEMPLE');hall(12,3,1,0,4,'MAINTENANCE');hall(18,5,0,1,3,'WORKSHOP');hall(18,12,0,1,4,'ESCAPE WING');hall(10,5,0,1,3,'SANCTUARY');hall(10,13,0,1,3,'SEAL CONTROL');hall(5,10,1,0,3,'SANCTUARY');hall(13,10,1,0,3,'WORKSHOP');
+ // Broad paired galleries make the temple read as one place instead of nine boxes linked by thin strips.
+ hall(2,5,0,1,3,'BURIAL CHAMBERS',2);
+ hall(3,12,0,1,4,'SEALED ARCHIVE',1);
+ hall(5,2,1,0,3,'LOWER TEMPLE',2);
+ hall(12,2,1,0,4,'MAINTENANCE',2);
+ hall(18,5,0,1,3,'WORKSHOP',2);
+ hall(18,12,0,1,4,'ESCAPE WING',1);
+ hall(10,5,0,1,3,'RITUAL SANCTUARY',2);
+ hall(10,13,0,1,3,'SEAL CONTROL',2);
+ hall(5,10,1,0,3,'SANCTUARY',2);
+ hall(13,10,1,0,3,'WORKSHOP',2);
+
  const gates=[{id:'archiveGate',a:maze[3][15],b:maze[3][16],dir:'e',back:'w',flag:'archiveOpen'},{id:'surfaceGate',a:maze[18][15],b:maze[18][16],dir:'e',back:'w',flag:'exitUnlocked'}];
  for(const gate of gates){gate.a[gate.dir]=true;gate.b[gate.back]=true;(gate.a.doors??={})[gate.dir]=gate;(gate.b.doors??={})[gate.back]=gate;}
  const vents=[],ventRoutes=[];

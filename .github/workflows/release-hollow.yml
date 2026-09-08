@@ -31,8 +31,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: temple-escape-v3-1-${{ github.ref }}
-  cancel-in-progress: false
+  group: temple-escape-v3-1-1-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   verify-and-release:
@@ -51,7 +51,7 @@ jobs:
           TEMPLE_RELEASE_VERSION=3.0.0 node scripts/extract-assets.mjs
       - name: Check gameplay, geometry, equipment and creature rig
         run: npm test
-      - name: Build fresh v3.1 offline HTML
+      - name: Build fresh v3.1.1 offline HTML
         run: npm run build:html
       - name: Verify offline file and checksum
         run: |
@@ -59,23 +59,23 @@ jobs:
           sha256sum --check SHA256SUMS.txt
           cd ..
           node scripts/verify-standalone.mjs
-      - name: Publish v3.1.0 download
+      - name: Publish v3.1.1 map repair
         if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if gh release view v3.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'v3.1.0 already exists; leaving its assets unchanged.'
+          if gh release view v3.1.1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'v3.1.1 already exists; leaving its assets unchanged.'
             exit 0
           fi
-          gh release create v3.1.0 \
-            standalone/TempleEscape-v3.1.0.html \
+          gh release create v3.1.1 \
+            standalone/TempleEscape-v3.1.1.html \
             standalone/SHA256SUMS.txt \
             THIRD_PARTY_NOTICES.md \
             --target "$GITHUB_SHA" \
             --repo "$GITHUB_REPOSITORY" \
-            --title 'Temple Escape v3.1.0 — The Hunt' \
+            --title 'Temple Escape v3.1.1 — Map Repair' \
             --notes-file RELEASE_NOTES.md \
             --latest

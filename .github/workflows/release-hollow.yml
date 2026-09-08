@@ -32,7 +32,7 @@ permissions:
 
 concurrency:
   group: temple-escape-v3-1-1-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   verify-and-release:

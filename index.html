@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#090f10" />
+  <meta name="description" content="Recover five crystals, outwit the Guardian, and escape an ancient temple. Temple Escape: The Hollow." />
+  <title>Temple Escape: The Hollow</title>
+  <link rel="icon" href="data:," />
+</head>
+<body>
+  <div id="game" aria-label="Temple Escape 3D game"></div>
+  <div id="vignette" aria-hidden="true"></div>
+  <section id="menu" class="screen menu-screen" aria-labelledby="gameTitle">
+    <header class="menu-header"><span class="wordmark">TE<span class="wordmark-line"></span></span><span>TEMPLE ESCAPE <b>2.1</b></span><button id="settingsBtn" class="quiet">Settings</button></header>
+    <div class="menu-panel">
+      <p class="eyebrow"><span class="dash"></span> CHAPTER I · THE FORGOTTEN GATE</p>
+      <h1 id="gameTitle">TEMPLE<br>ESCAPE</h1>
+      <p class="chapter">T H E  H O L L O W</p>
+      <p class="tagline">Five crystals. One way out.<br>Listen. Hide. Find the gate.</p>
+      <div class="menu-actions"><button id="playBtn" class="primary enter-button" disabled><span id="playLabel">Opening the temple…</span><span aria-hidden="true">↗</span></button></div>
+      <p id="loadStatus" role="status" class="status-text">Preparing your descent</p>
+      <button id="reloadBtn" class="quiet hidden">Try loading again</button>
+    </div>
+    <div class="menu-location"><span class="eyebrow">THE FORGOTTEN GATE</span><span>Find its scattered light.</span></div>
+    <footer class="menu-footer"><span id="platformTag">OFFLINE EDITION · HEADPHONES RECOMMENDED</span><span>WASD to move <i>·</i> Mouse to look <i>·</i> E to collect</span></footer>
+  </section>
+
+  <section id="settings" class="screen modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="card settings-card"><div class="settings-heading"><div><p class="eyebrow">TEMPLE ESCAPE</p><h2 id="settingsTitle">Settings</h2></div><button id="settingsClose" class="primary">Apply & close</button></div>
+      <div class="settings-columns"><fieldset><legend>Graphics</legend>
+      <label>Quality preset<select id="qualitySelect"><option value="auto">Automatic · performance</option><option value="legacy">Performance · older Macs and PCs</option><option value="balanced">Balanced</option><option value="high">High detail</option><option value="ultra">Cinematic · powerful GPUs</option></select></label>
+      <label>Render resolution <div class="range-row"><input id="renderScale" type="range" min="50" max="150" step="5"><output id="renderScaleValue">100%</output></div></label>
+      <label>Textures<select id="textureSelect"><option value="auto">Match preset</option><option value="1k">1K · lower memory</option><option value="2k">2K</option><option value="4k">4K · high memory</option></select></label>
+      <label>Flashlight shadows<select id="shadowSelect"><option value="auto">Match preset</option><option value="off">Off</option><option value="512">Low</option><option value="1024">Medium</option><option value="2048">High</option></select></label>
+      <label>Brightness <div class="range-row"><input id="brightness" type="range" min="0.7" max="2" step="0.1" value="1.1"><output id="brightnessValue">1.1</output></div></label>
+      <label>Fog density <div class="range-row"><input id="fogAmount" type="range" min="30" max="150" step="5"><output id="fogAmountValue">100%</output></div></label>
+      <label>Sharpness <div class="range-row"><input id="sharpness" type="range" min="0" max="1" step="0.05"><output id="sharpnessValue">0.25</output></div></label>
+      <label class="row"><span>Anti-aliasing · FXAA</span><input id="aaToggle" type="checkbox" checked></label>
+      <label class="row"><span>Soft bloom</span><input id="bloomToggle" type="checkbox"></label>
+      <label class="row"><span>Ambient occlusion · SSAO</span><input id="aoToggle" type="checkbox"></label>
+      <label class="row"><span>Film grain</span><input id="grainToggle" type="checkbox"></label>
+      </fieldset><fieldset><legend>Game & sound</legend>
+      <label>Creature skin<select id="skinSelect"><option value="basalt">Basalt · weathered stone</option><option value="ash">Ash · pale stone</option><option value="oxide">Oxide · rust</option></select></label>
+      <label>Field of view <div class="range-row"><input id="fov" type="range" min="60" max="100" step="1"><output id="fovValue">76°</output></div></label>
+      <label>Mouse sensitivity <div class="range-row"><input id="sensitivity" type="range" min="0.4" max="2.5" step="0.1" value="1"><output id="sensitivityValue">1.0</output></div></label>
+      <label>Volume <div class="range-row"><input id="volume" type="range" min="0" max="100" step="5"><output id="volumeValue">65%</output></div></label>
+      <label class="row"><span>Camera motion</span><input id="shakeToggle" type="checkbox"></label>
+      <label class="row"><span>Sound & ambience</span><input id="audioToggle" type="checkbox" checked></label>
+      <label class="row"><span>Show first-person arms</span><input id="armsToggle" type="checkbox" checked></label>
+      <label class="row"><span>Keep map visible</span><input id="mapToggle" type="checkbox"></label>
+      <label class="row"><span>Gentler capture effect</span><input id="reducedScareToggle" type="checkbox"></label>
+      <p class="settings-note">Hold M to check explored passages. C toggles crouching; Ctrl holds it. You cannot stand up inside a vent.</p>
+      <p class="fine-print">Textures and temple detail change on your next descent. Other settings apply when you close this menu. Performance mode is the best starting point for an older Mac.</p>
+      <details class="credits"><summary>Asset credits</summary><p>Creature: Maw Gooey by Quaternius. Original rig and animations adapted for Temple Escape. Arms and stone textures carried forward from the supplied project. See THIRD_PARTY_NOTICES.md in the release.</p></details>
+      </fieldset></div>
+    </div>
+  </section>
+  <section id="pause" class="screen modal hidden" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+    <div class="card small"><p class="eyebrow">TAKE A BREATH</p><h2 id="pauseTitle">Paused</h2><p id="pauseHint">Your descent will wait.</p><button id="resumeBtn" class="primary">Resume descent</button><button id="pauseSettingsBtn">Settings</button><button id="quitBtn" class="quiet">Return to menu</button></div>
+  </section>
+  <section id="endScreen" class="screen modal hidden" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="card small"><p id="endEyebrow" class="eyebrow">THE GATE AWAKENS</p><h2 id="endTitle">Escaped</h2><p id="endText">You made it through.</p><div id="runStats" class="run-stats"></div><button id="retryBtn" class="primary">New descent</button><button id="endMenuBtn" class="quiet">Return to menu</button></div>
+  </section>
+  <div id="hud" class="hidden">
+    <div class="hud-top"><div class="objective-panel"><p class="eyebrow">THE FORGOTTEN GATE</p><div class="crystal-line"><span class="crystal-icon" aria-hidden="true">◆</span><strong id="crystalCount">0 / 5</strong><span>CRYSTALS</span></div><p id="objectiveText">Recover the gate crystals</p></div><div class="map-wrap"><canvas id="minimap" width="220" height="220" aria-label="Map of explored passages, vents, crystals, and your position"></canvas><span>THE TEMPLE <b>N ↑</b></span></div></div>
+    <div id="toast" class="toast hidden" role="status"></div>
+    <div id="warning" class="warning hidden" role="status">THE GUARDIAN IS SEARCHING</div>
+    <div id="crosshair" aria-hidden="true"></div>
+    <div id="prompt" class="prompt hidden"><kbd>E</kbd> Collect crystal</div>
+    <div class="hud-bottom"><div class="meter"><div class="label"><span>FLASHLIGHT <kbd>F</kbd></span><strong id="batteryText">100%</strong></div><div class="bar"><i id="batteryBar"></i></div></div><div class="meter stamina-meter"><div class="label"><span>STAMINA</span><span>SHIFT TO SPRINT</span></div><div class="bar"><i id="staminaBar"></i></div></div><div class="meter"><div class="label"><span>HEALTH</span><strong id="healthText">100</strong></div><div class="bar red"><i id="healthBar"></i></div></div></div>
+    <div class="control-hint">C <span>crouch</span> <i>·</i> M <span>hold map</span> <i>·</i> E <span>collect</span> <i>·</i> F <span>light</span> <i>·</i> ESC <span>pause</span></div><div class="status-corner"><span id="posture">STANDING</span><span id="fpsText"></span></div>
+    <button id="hudPause" class="hud-pause" aria-label="Pause game">Ⅱ</button>
+    <div id="touchControls" class="touch-controls"><div class="touch-pad"><button data-key="KeyW" aria-label="Move forward">↑</button><div><button data-key="KeyA" aria-label="Move left">←</button><button data-key="KeyS" aria-label="Move backward">↓</button><button data-key="KeyD" aria-label="Move right">→</button></div></div><div class="touch-actions"><button id="touchCollect">Collect</button><button id="touchJump">Jump</button><button data-key="ShiftLeft">Sprint</button><button id="touchFlash">Light</button><button id="touchCrouch">Crouch</button><button id="touchMap">Map</button></div></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

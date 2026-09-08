@@ -1,0 +1,54 @@
+name: Release Temple Escape offline HTML
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-hollow.yml'
+      - '.release/v2.1.0/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temple-escape-hollow-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check gameplay logic
+        run: node --test tests/*.test.js
+      - name: Verify release bytes and offline resources
+        run: |
+          node scripts/restore-html.mjs
+          cd standalone
+          sha256sum --check SHA256SUMS.txt
+          cd ..
+          node scripts/verify-standalone.mjs
+      - name: Publish a new release with download assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view v2.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'v2.1.0 already exists; leaving its assets unchanged.'
+            exit 0
+          fi
+          gh release create v2.1.0 \
+            standalone/TempleEscape-v2.1.0.html \
+            standalone/SHA256SUMS.txt \
+            THIRD_PARTY_NOTICES.md \
+            --target "$GITHUB_SHA" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title 'Temple Escape v2.1.0 — The Hollow' \
+            --notes-file RELEASE_NOTES.md \
+            --latest

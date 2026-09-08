@@ -1,9 +1,9 @@
 {
   "name": "temple-escape",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": true,
   "type": "module",
-  "description": "Temple Escape: Last Descent \u2014 standalone survival horror escape chapter",
+  "description": "Temple Escape: Last Descent — standalone survival horror escape chapter with refined hunter pursuit",
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",

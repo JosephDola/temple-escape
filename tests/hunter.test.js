@@ -27,6 +27,15 @@ test('the hunter crawls through a low duct, emerges, and stands again',()=>{
  assert.equal(entered,true);assert.equal(last.crawl,false);assert.ok(Math.abs(position.x-2)<.1);
 });
 
+test('chase navigation replans faster and treats vents as stronger pursuit routes than patrol',()=>{
+ const maze=grid(2),a=maze[0][0],b=maze[0][1];a.vents={e:b};b.vents={w:a};
+ const chase=advanceHunter(createNavigation(),{...cellPosition(maze,a)},b,maze,[],[],1/60,{mode:'chase'});
+ const search=advanceHunter(createNavigation(),{...cellPosition(maze,a)},b,maze,[],[],1/60,{mode:'search'});
+ const patrol=advanceHunter(createNavigation(),{...cellPosition(maze,a)},b,maze,[],[],1/60,{mode:'patrol'});
+ assert.ok(chase.repathDelay<search.repathDelay&&search.repathDelay<patrol.repathDelay);
+ assert.ok(chase.ventCost<search.ventCost&&search.ventCost<patrol.ventCost);
+});
+
 test('100 layouts: reciprocal vent links give useful shortcuts without removing normal escape paths',()=>{
  for(let seed=1;seed<=100;seed++){const random=seededRandom(seed),maze=makeMaze(9,random),vents=makeVents(maze,random);assert.ok(vents.length>=4);
   for(const v of vents){assert.equal(v.a.vents[v.dir],v.b);assert.equal(v.b.vents[v.back],v.a);assert.equal(v.a[v.dir],true);assert.ok(findPath(maze,v.a,v.b).length>=4);assert.deepEqual(navigationPath(maze,v.a,v.b),[v.b]);}

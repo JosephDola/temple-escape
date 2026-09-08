@@ -7,17 +7,25 @@ export function reachableCells(maze,start,maxDistance=Infinity){
  }
  return distance;
 }
+function uniqueCells(cells){return [...new Set(cells)];}
+function roomCenters(level,pool){return pool.filter(c=>level.rooms.some(r=>c.r===r.r+Math.floor(r.h/2)&&c.c===r.c+Math.floor(r.w/2)));}
+function randomCell(pool,random){return pool[Math.min(pool.length-1,Math.floor(random()*pool.length))];}
 export function pickHuntTarget(level,cell,brain,random){
- const nearby=reachableCells(level.maze,cell,brain.mode==='search'?5:Infinity);
+ const searching=brain.mode==='search',nearby=reachableCells(level.maze,cell,searching?5:Infinity);
  let pool=[...nearby.keys()].filter(c=>c!==cell&&!c.duct);
- if(brain.mode==='search'){
-  const mouths=level.ventRoutes.flatMap(v=>[v.a,v.b]).filter(c=>c!==cell&&nearby.has(c));
-  if(mouths.length&&random()<.7)pool=mouths;
+ if(!pool.length)return cell;
+ const previous=brain.lastHuntTarget;const fresh=pool.filter(c=>c!==previous);if(fresh.length)pool=fresh;
+ let preferred=pool;
+ if(searching){
+  const mouths=uniqueCells(level.ventRoutes.flatMap(v=>[v.a,v.b]).filter(c=>c!==cell&&nearby.has(c)&&c!==previous));
+  const rooms=roomCenters(level,pool);const roll=random();
+  if(mouths.length&&roll<.58)preferred=mouths;
+  else if(rooms.length&&roll<.84)preferred=rooms;
  }else{
-  const rooms=pool.filter(c=>level.rooms.some(r=>c.r===r.r+Math.floor(r.h/2)&&c.c===r.c+Math.floor(r.w/2)));
-  if(rooms.length)pool=rooms;
+  const rooms=roomCenters(level,pool),distant=rooms.filter(c=>(nearby.get(c)||0)>=4);
+  preferred=distant.length?distant:rooms.length?rooms:pool;
  }
- return pool[Math.min(pool.length-1,Math.floor(random()*pool.length))]||cell;
+ const target=randomCell(preferred,random)||cell;brain.lastHuntTarget=target;return target;
 }
 export function createVentMemory(){return {uses:new Map(),inside:null,observed:null,prediction:null};}
 // This receives only observations. Hidden player positions are never stored.

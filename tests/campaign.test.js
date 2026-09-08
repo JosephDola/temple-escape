@@ -26,7 +26,7 @@ test('room and corridor boundaries include edges next to unused cells',()=>{
   for(const next of neighbors(level.maze,cell))assert.equal(corridorClear(center,levelPosition(level,next),boxes,.31,1.9,(x,z)=>groundHeight(level,x,z)),true);
  }
  for(const wall of segments){const p=levelPosition(level,wall.cell),target={x:wall.x*2-p.x,z:wall.z*2-p.z};assert.equal(corridorClear(p,target,boxes,.3,1.9,p.y),false);}
- // The unused gap below the workshop must have a real southern wall.
+ // The unused gap below the upper room blocks must still have real boundary walls.
  assert.ok(segments.some(s=>s.cell===level.maze[5][9]&&s.dir==='s'));
 });
 
@@ -35,7 +35,7 @@ test('opening a door updates physical movement, line of sight and route availabi
  const door={x1:x-.14,x2:x+.14,z1:a.z-1.1,z2:a.z+1.1,y1:a.y,y2:a.y+3.15,disabled:false};
  const moving={...a};slideBody(moving,b.x-a.x,0,[door],.3,1.72,a.y);assert.ok(moving.x<x-.3);assert.equal(sightClear({...a,y:a.y+1.7},{...b,y:a.y+1.7},[door]),false);
  p.archiveOpen=true;syncDoors(level,p);door.disabled=true;slideBody(moving,b.x-moving.x,0,[door],.3,1.72,a.y);assert.ok(Math.abs(moving.x-b.x)<.01);
- assert.equal(sightClear({...a,y:a.y+1.7},{...b,y:a.y+1.7},[door]),true);assert.equal(navigationPath(level.maze,g.a,g.b).length,1);
+ assert.equal(sightClear({...a,y:a.y+1.7},{...b,y:b.y+1.7},[door]),true);assert.equal(navigationPath(level.maze,g.a,g.b).length,1);
 });
 
 test('checkpoints preserve completed tasks, code seed and explored rooms, rejecting invalid saves',()=>{
@@ -46,9 +46,13 @@ test('checkpoints preserve completed tasks, code seed and explored rooms, reject
  const inconsistent=readCheckpoint(JSON.stringify({...restored,progress:{...p,power:false,exitUnlocked:true}}));assert.equal(inconsistent.progress.exitUnlocked,false);assert.equal(inconsistent.progress.codeKnown,false);
 });
 
-test('expanded zones have continuous traversable slopes and both seals can be used in either order',()=>{
- const level=makeEscapeLevel(71);assert.ok(level.maze.flat().filter(c=>c.active).length>=300);assert.equal(new Set(level.rooms.map(r=>r.floor)).size,3);
- for(const hall of level.halls){for(let i=1;i<hall.route.length;i++){const a=hall.route[i-1],b=hall.route[i],pa=levelPosition(level,a),pb=levelPosition(level,b),x=(pa.x+pb.x)/2,z=(pa.z+pb.z)/2;assert.ok(Math.abs(cellHeight(a,x,z)-cellHeight(b,x,z))<.001,'continuous floor across cells');}}
+test('expanded zones use broad connected galleries, continuous slopes and gated choke points',()=>{
+ const level=makeEscapeLevel(71);assert.ok(level.maze.flat().filter(c=>c.active).length>=315);assert.equal(new Set(level.rooms.map(r=>r.floor)).size,3);
+ const broad=level.halls.filter(h=>h.width===2),gated=level.halls.filter(h=>h.width===1);assert.ok(broad.length>=8);assert.deepEqual(gated.map(h=>h.label).sort(),['ESCAPE WING','SEALED ARCHIVE']);
+ for(const hall of level.halls){
+  for(let i=1;i<hall.route.length;i++){const a=hall.route[i-1],b=hall.route[i],pa=levelPosition(level,a),pb=levelPosition(level,b),x=(pa.x+pb.x)/2,z=(pa.z+pb.z)/2;assert.ok(Math.abs(cellHeight(a,x,z)-cellHeight(b,x,z))<.001,'continuous floor across cells');}
+  if(hall.width===2)for(let i=0;i<hall.lanes[0].length;i++){const a=hall.lanes[0][i],b=hall.lanes[1][i];assert.ok(neighbors(level.maze,a).includes(b),`${hall.label} lane ${i} cross-connected`);}
+ }
  for(const order of [['sealA','sealB'],['sealB','sealA']]){
   const p=newProgress();for(const task of TASKS.slice(0,6))assert.equal(completeTask(p,task.id).changed,true);
   assert.equal(completeTask(p,'artifact').changed,false);assert.equal(completeTask(p,order[0]).changed,true);assert.equal(completeTask(p,'artifact').changed,false);

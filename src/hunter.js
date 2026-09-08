@@ -8,7 +8,7 @@ export function createNavigation(){return {route:[],goal:null,cooldown:0,stuck:0
 export function advanceHunter(nav,position,goal,maze,boxes,lowAreas,dt,{visible=false,playerPosition=null,lastPosition=null,mode='patrol',aggression=0,floorAt=()=>0,speedScale=1,allowVents=true}={}){
  position.y=floorAt(position.x,position.z);const cell=positionCell(maze,position),crawl=lowAreas.some(b=>overlapsBox(b,position.x,position.z,.55));
  nav.cooldown-=dt;
- const repathDelay=mode==='chase'?.14:mode==='investigate'||mode==='search'?.28:.55;
+ const repathDelay=mode==='chase' ? .14 : mode==='investigate'||mode==='search' ? .28 : .55;
  const ventCost=mode==='chase'?1.22:mode==='search'?1.42:mode==='investigate'?1.68:2.05;
  if(nav.cooldown<=0||nav.goal!==goal||nav.allowVents!==allowVents||nav.mode!==mode){nav.cooldown=repathDelay;nav.goal=goal;nav.allowVents=allowVents;nav.mode=mode;nav.route=navigationPath(maze,cell,goal,{allowVents,ventCost});}
  let target=null;

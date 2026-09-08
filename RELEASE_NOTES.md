@@ -1,27 +1,23 @@
-# Temple Escape v3.1.0 — The Hunt
+# Temple Escape v3.1.1 — Map Repair
 
-Download **TempleEscape-v3.1.0.html** from Assets and open it in a browser with WebGL 2. The game, models, animations, and textures are embedded in one file. It opens straight to the title screen and works offline, with no Firebase, login, ChatGPT site redirect, installer, or server.
+Download **TempleEscape-v3.1.1.html** from Assets and open it in a browser with WebGL 2. Everything is embedded in one offline file. There is still no Firebase, login, ChatGPT-site redirect, installer, or server requirement.
 
-## Hunter refinement
+## Map repair
 
-- Chase navigation now recalculates routes more aggressively than patrol or search, so sudden turns and changed player routes are handled sooner without teleporting through geometry.
-- The Hollow now values vents differently depending on its state: pursuit favors useful duct shortcuts, local search considers vent mouths more often, and normal patrol avoids overusing them.
-- Lost-sight searches are more deliberate. The hunter alternates between nearby vent mouths, room centers, and surrounding cells instead of repeatedly picking the same search point.
-- Chase crawl speed is now distinct from patrol crawl speed, making duct pursuit feel intentional while the player still keeps the faster full sprint in open halls.
-- The creature rig has stronger bounded chase/crawl motion, including more responsive tentacle movement, breathing sway, face tracking, and eye-reflection pulsing. Procedural offsets still restore cleanly between animation frames.
+- Rebuilt the large-area connections that made v3.1 feel like separate square blocks joined by skinny strips.
+- Major non-gated passages are now broad two-lane galleries with continuous openings between both sides of the corridor.
+- The Upper Temple, Burial Chambers, lower temple, Sanctuary, Seal Control, Maintenance, and Workshop now connect through wider architecture that reads as one temple instead of disconnected room islands.
+- Vertical transitions are continuous across both sides of the wider galleries, so floor elevation changes stay aligned instead of producing awkward single-file ramps.
+- The Sealed Archive and Escape Wing intentionally remain narrow gated choke points. Their locks still cannot be bypassed through the widened layout or vents.
+- Interior partitions were simplified so rooms still break line of sight without feeling like another random maze inside every room.
+- Objective locations, supplies, lockers, vents, doors, checkpoints, signs, and the existing progression order were preserved.
 
-## Last Descent remains intact
+## The Hunt remains intact
 
-- Nine authored areas across three connected elevations with no map and no countdown.
-- Eleven escape tasks, physical vents, slow doors, lockers, decoys, supplies, steam hazards, flooded movement, checkpoints, and a held flashlight.
-- The actual 18-bone Quaternius creature, three skins, skeletal animation clips, positional creature audio, wall muffling, and capture sequence remain part of the offline build.
-- Vent prediction still only uses witnessed behavior; hidden player movement is not used to teach the hunter exits.
-- Multiplayer and voice chat remain future work while the single-player horror loop is refined.
+v3.1's hunter improvements are still included: faster chase repathing, state-specific vent use, more deliberate lost-sight searches, distinct chase crawl speed, and stronger bounded creature chase/crawl motion. The actual 18-bone creature rig, three skins, skeletal animation clips, positional audio, flashlight, physical vents, and capture sequence remain unchanged by this repair.
 
-## Build and validation
+## Validation
 
-The release pipeline now rebuilds a fresh standalone HTML from the current source instead of treating the previous 20 MB file as the final code. Existing embedded v3.0 resources are checksum-verified, restored for the build, then re-embedded with the v3.1 source. Pull requests run gameplay/geometry/rig checks and standalone-file verification before merge; the main branch publishes the verified single-file release.
+The revised layout passed full objective progression, locked-room access, wall collision, corridor clearance, broad-gallery cross-connection, continuous-slope, vent, hunter, equipment, creature-rig, standalone HTML, and checksum verification. Browser visual playtesting is still the final manual check.
 
 **Controls:** WASD move · Mouse look · Shift sprint · C crouch · E use/hold to work · F light · J journal · Q decoy · Esc pause.
-
-Browser visual playtesting and Mac frame-rate measurements are still the remaining manual checks. Start with Performance settings on older hardware. Asset sources and licenses remain in THIRD_PARTY_NOTICES.md.

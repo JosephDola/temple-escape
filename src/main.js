@@ -10,6 +10,10 @@ import {createNavigation,advanceHunter} from './hunter.js';
 import {createCreatureRig} from './creature-rig.js';
 import {createVentMemory,observeVentUse,pickHuntTarget} from './hunt-director.js';
 import {acousticPosition} from './acoustics.js';
+import {createEchoVision} from './echo-vision.js';
+import {footstepLoudness} from './echo-rules.js';
+const MONSTER_VIEW=new URLSearchParams(location.search).has('monster');let echo=null;
+function toggleEcho(){if(state!=='playing'||!renderer||!scene)return;if(echo){echo.dispose();echo=null;}else echo=createEchoVision(renderer,scene,{hide:()=>[armsRoot,flashlight]});notifyPlayer(echo?'Echo vision on. Press V to switch back.':'Echo vision off.',2.5);}
 import {advanceDoor} from './doors.js';
 import './style.css';
 
@@ -214,7 +218,7 @@ function applyGraphics(){
  renderer.shadowMap.enabled=shadows;renderer.shadowMap.type=THREE.PCFSoftShadowMap;const flash=camera.userData.flash;flash.castShadow=shadows;
  if(flash.shadow.mapSize.x!==size){flash.shadow.map?.dispose();flash.shadow.map=null;flash.shadow.mapSize.set(size,size);}flash.shadow.needsUpdate=true;
  scene.fog.density=q.fog*Number(ui.fogAmount.value)/100;
- pipeline?.dispose();pipeline=createPipeline(renderer,scene,camera,options());
+ pipeline?.dispose();pipeline=createPipeline(renderer,scene,camera,options());echo?.dispose();echo=MONSTER_VIEW?createEchoVision(renderer,scene,{hide:()=>[armsRoot,flashlight]}):null;
  
  skinCreature(guardianModel,ui.skinSelect.value);
 }
@@ -233,7 +237,7 @@ function buildTempleRoof(q) {
 
 function disposeScene(){
  if(!scene)return;
- pipeline?.dispose();pipeline=null;
+ pipeline?.dispose();pipeline=null;echo?.dispose();echo=null;
  const keepGeometries=new Set(),keepMaterials=new Set(),keepTextures=new Set(Object.values(assets.wall).filter(Boolean));
  for(const template of [assets.guardianTemplate,assets.armsTemplate])template?.traverse(o=>{if(o.geometry)keepGeometries.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m){keepMaterials.add(m);for(const value of Object.values(m))if(value?.isTexture)keepTextures.add(value);}});
  const geometries=new Set(),materials=new Set(),textures=new Set();
@@ -332,7 +336,7 @@ function move(dt){
  if(player.ground){player.p.y=THREE.MathUtils.lerp(player.p.y,baseHeight,1-Math.exp(-dt*16));player.vy=0;}else{player.vy-=16*dt;player.p.y+=player.vy*dt;if(player.p.y<=baseHeight){player.p.y=baseHeight;player.vy=0;player.ground=true;}}
  headBob+=player.speed*dt*2.3;camera.position.copy(player.p);if(ui.shakeToggle.checked&&player.ground)camera.position.y+=Math.sin(headBob*2)*Math.min(player.speed/6,1)*.021;camera.rotation.set(pitch,yaw,0,'YXZ');updateHeldFlashlight(dt);
  visited.add(cellAt(player.p));document.body.classList.toggle('crawling',player.crouched);
- if(player.speed>.15&&player.ground){footstepTimer-=dt;if(footstepTimer<=0){footstepTimer=player.crouched?.65:player.running?.27:.44;noisePulse=.12;sfx(player.inVent?'crawl':wet?'water-step':cellAt(player.p).surface==='metal'?'metal-step':'step');}}else footstepTimer=0;
+ if(player.speed>.15&&player.ground){footstepTimer-=dt;if(footstepTimer<=0){footstepTimer=player.crouched?.65:player.running?.27:.44;noisePulse=.12;echo?.ping(player.p,footstepLoudness(player));sfx(player.inVent?'crawl':wet?'water-step':cellAt(player.p).surface==='metal'?'metal-step':'step');}}else footstepTimer=0;
 }
 function notifyPlayer(message,seconds=4){ui.toast.textContent=message;ui.toast.classList.remove('hidden');toastUntil=elapsed+seconds;}
 function syncProgress(initial=false){
@@ -500,7 +504,7 @@ function animate(now){
  const menuView=state!=='playing';menuTime+=dt;const t=menuView?menuTime:elapsed;
  portal.userData.panel.position.y=THREE.MathUtils.lerp(portal.userData.panel.position.y,progress.exitUnlocked?3.2:0,Math.min(1,dt*2));portalLight.intensity=progress.exitUnlocked?5.2:.25;
  if(menuView){camera.userData.flash.intensity=0;camera.userData.spill.intensity=0;armsRoot.visible=false;flashlight.visible=false;if(ui.shakeToggle.checked)menuCamera.position.x=menuCamera.userData.base.x+Math.sin(t*.13)*.12;}
- pipeline.render(menuView?menuCamera:camera,t);
+ if(echo&&!menuView)echo.render(camera,t,dt);else pipeline.render(menuView?menuCamera:camera,t);
 }
 
 function showOnly(panel){for(const node of [ui.menu,ui.pause,ui.endScreen,ui.hud])node.classList.toggle('hidden',node!==panel);}
@@ -548,7 +552,7 @@ addEventListener('keydown',e=>{
  if(puzzleOpen){if(cycleFocus(e,ui.keypad))return;e.preventDefault();if(e.repeat)return;if(/^Digit[0-9]$|^Numpad[0-9]$/.test(e.code))keypadDigit(e.code.slice(-1));else if(e.code==='Enter')submitKeypad();else if(e.code==='Backspace'){keypadValue=keypadValue.slice(0,-1);updateKeypad();}else if(e.code==='Escape')closeKeypad();return;}
  if(state!=='playing')return;
  if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyW','KeyA','KeyS','KeyD','KeyE','KeyF','Escape','ShiftLeft','ShiftRight','ControlLeft','ControlRight','KeyC','KeyJ','KeyQ'].includes(e.code))e.preventDefault();keys.add(e.code);if(e.repeat)return;
- if(e.code==='KeyC')player.crouchRequested=!player.crouchRequested;if(e.code==='KeyJ')openJournal();if(e.code==='KeyQ')tossDecoy();if(e.code==='Space')jump();if(e.code==='KeyE')interact();if(e.code==='KeyF')toggleLight();if(e.code==='Escape')pause();
+ if(e.code==='KeyC')player.crouchRequested=!player.crouchRequested;if(e.code==='KeyJ')openJournal();if(e.code==='KeyQ')tossDecoy();if(e.code==='KeyV')toggleEcho();if(e.code==='Space')jump();if(e.code==='KeyE')interact();if(e.code==='KeyF')toggleLight();if(e.code==='Escape')pause();
 });
 addEventListener('keyup',e=>{keys.delete(e.code);});addEventListener('mousemove',e=>{if(state==='playing'&&document.pointerLockElement===renderer?.domElement)look(e.movementX,e.movementY);});
 document.addEventListener('pointerlockchange',()=>{const locked=document.pointerLockElement===renderer?.domElement;if(hadLock&&!locked&&state==='playing'&&!puzzleOpen)pause();hadLock=locked;});

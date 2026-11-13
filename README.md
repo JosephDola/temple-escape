@@ -1,5 +1,7 @@
 # Temple Escape: Last Descent — The Hunt
 
+**[▶ Play in your browser](https://josephdola.github.io/temple-escape/)** — nothing to install, no downloads, no terminal.
+
 An offline first-person survival horror chapter, built on Temple Escape: Reawakened. Restore power, uncover the sanctuary's secrets, and reach the surface while the Hollow hunts through the temple and its ducts.
 
 **[Download TempleEscape-v3.1.1.html](https://github.com/JosephDola/temple-escape/releases/download/v3.1.1/TempleEscape-v3.1.1.html)** · [Latest release](https://github.com/JosephDola/temple-escape/releases/latest)
@@ -39,6 +41,7 @@ Sound pans with the camera, attenuates with distance, and muffles through walls.
 | F | Toggle held flashlight; it recharges while off |
 | J | Open/close task journal and recovered notes |
 | Q | Throw a distraction stone (three per run) |
+| V | Echo vision on/off (the blind monster's sound-dots view) |
 | Space | Jump |
 | Esc | Pause or close the active panel |
 
